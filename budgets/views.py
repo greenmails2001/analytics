@@ -28,7 +28,7 @@ class BudgetDetailView(DetailView):
 
     def get_queryset(self):
         qs = super(BudgetDetailView, self).get_queryset()
-        print('1')
+        print('11111')
         return qs.filter(employees__in=[self.request.user])
 
     def get_context_data(self, **kwargs):
