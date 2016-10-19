@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ object.name }}
+{% endblock %}
+{% block menu %}
+
+    <!--div class="contents"-->
+        <!--h3>MenuDetails</h3-->
+        <!--ul id="modules"-->
+        <ul class="nav-menu nav nav-pills nav-stacked">
+            {% for m in object.rel_menu_details.all %}
+                <li data-id="{{ m.id }}" {% if m == menudetail %} class="selected"{% endif %}>
+                    <a href="{% url "budget_menuheader_detail_menudetail" object.id m.id %}">
+                                                    Detail <span class="order">{{ m.orderview|add:1 }} ({{ m.name }})</span>
+                    </a>
+                </li>
+            {% empty %}
+                <li>No menudetails yet.</li>
+            {% endfor %}
+        </ul>
+
+    <!--/div-->
+{% endblock %}
+{% block content %}
+    <h1>
+        {{ menudetail.name }}
+    </h1>
+        <div class="module">
+                    {% for itemcontent in menudetail.rel_itemcontents_menudetails.all %}
+                        {% with item=itemcontent.item %}
+                                <div class="col-sm-4 col-xs-12">
+                                  <div class="panel panel-default text-center">
+                                    <div class="panel-heading">
+                                      <h1>{{item}}</h1>
+                                    </div>
+                                    <div class="panel-body">
+                                      <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
+                                        {% for task in tasklists %}
+                                            <p>{{ task.taskid }} - {{ task.shortname }} - {{ task.note }}</p>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="panel-footer">
+                                      <button class="btn btn-lg">Detail</button>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div class="col-sm-4 col-xs-12">
+                                  <div class="panel panel-default text-center">
+                                    <div class="panel-heading">
+                                      <h1>{{item}}</h1>
+                                    </div>
+                                    <div class="panel-body">
+                                      <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
+                                        {% for site in sites %}
+                                            <p>{{ site.siteid }} - {{ site.sitename }} - {{ site.manager }}- {{ site.phone }}</p>
+                                        {% endfor %}
+
+                                    <div class="panel-footer">
+                                      <button class="btn btn-lg">Detail</button>
+                                    </div>
+                                  </div>
+                                </div>
+                        {% endwith %}
+                    {% endfor %}
+        </div>
+
+{% endblock %}

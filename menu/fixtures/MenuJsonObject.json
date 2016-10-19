@@ -1,0 +1,134 @@
+[
+{
+  "pk": 1,
+  "model": "menu.menufunction",
+  "fields": {
+    "slug": "analytics",
+    "name": "Analytics"
+  }
+},
+{
+  "pk": 2,
+  "model": "menu.menufunction",
+  "fields": {
+    "slug": "inventory",
+    "name": "Inventory"
+  }
+},
+{
+  "pk": 3,
+  "model": "menu.menufunction",
+  "fields": {
+    "slug": "project",
+    "name": "Project"
+  }
+},
+{
+  "pk": 5,
+  "model": "menu.menufunction",
+  "fields": {
+    "slug": "document",
+    "name": "Document"
+  }
+},
+{
+  "pk": 1,
+  "model": "menu.menuheader",
+  "fields": {
+    "created": "2016-10-03T06:46:43.827Z",
+    "name": "Budget",
+    "menufunction": 1,
+    "description": "C\u00e1c report lien quan budget.",
+    "slug": "budget",
+    "available": true,
+    "owner": 1,
+    "orderview": 1,
+    "updated": "2016-10-03T06:50:01.825Z"
+  }
+},
+{
+  "pk": 2,
+  "model": "menu.menuheader",
+  "fields": {
+    "created": "2016-10-03T07:15:15.885Z",
+    "name": "Forecast",
+    "menufunction": 1,
+    "description": "Du bao ngan sach",
+    "slug": "forecast",
+    "available": true,
+    "owner": 1,
+    "orderview": 2,
+    "updated": "2016-10-03T07:15:15.885Z"
+  }
+},
+{
+  "pk": 1,
+  "model": "menu.menudetail",
+  "fields": {
+    "created": "2016-10-03T06:46:43.833Z",
+    "available": true,
+    "name": "Budget_Detail",
+    "slug": "budget_detail",
+    "menuheader": 1,
+    "updated": "2016-10-03T06:50:01.841Z",
+    "orderview": 1,
+    "description": "Budget Details"
+  }
+},
+{
+  "pk": 2,
+  "model": "menu.menudetail",
+  "fields": {
+    "created": "2016-10-03T06:50:01.843Z",
+    "available": true,
+    "name": "Budget002",
+    "slug": "budget002",
+    "menuheader": 1,
+    "updated": "2016-10-03T06:50:01.843Z",
+    "orderview": 2,
+    "description": "Revenue and Expense"
+  }
+},
+{
+  "pk": 3,
+  "model": "menu.menudetail",
+  "fields": {
+    "created": "2016-10-03T06:50:01.844Z",
+    "available": true,
+    "name": "Budget003",
+    "slug": "budget003",
+    "menuheader": 1,
+    "updated": "2016-10-03T06:50:01.844Z",
+    "orderview": 3,
+    "description": "Profit"
+  }
+},
+{
+  "pk": 4,
+  "model": "menu.menudetail",
+  "fields": {
+    "created": "2016-10-03T07:15:15.888Z",
+    "available": true,
+    "name": "Forecast001",
+    "slug": "forecast001",
+    "menuheader": 2,
+    "updated": "2016-10-03T07:15:15.888Z",
+    "orderview": 1,
+    "description": "Forecast about profit"
+  }
+},
+{
+  "pk": 5,
+  "model": "menu.menudetail",
+  "fields": {
+    "created": "2016-10-03T07:15:15.889Z",
+    "available": true,
+    "name": "Forecast002",
+    "slug": "forecast002",
+    "menuheader": 2,
+    "updated": "2016-10-03T07:15:15.889Z",
+    "orderview": 2,
+    "description": "Forecast about Expense"
+  }
+}
+]

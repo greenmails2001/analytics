@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    {% if menufunction %}{{ menufunction.name }}{% else %}MenuHeaders{% endif %}
+{% endblock %}
+{% block content %}
+    <div id="sidebar">
+        <h3>MenuFunctions</h3>
+        <ul>
+            <li {% if not menufunction %}class="selected"{% endif %}>
+                <a href="{% url "menu:menufunction_dashboard" %}">All</a>
+            </li>
+            {% for c in menufunctions %}
+                <li {% if menufunction.slug == c.slug %}class="selected"{% endif %}>
+                    <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="main" class="product-list">
+        <h1>{% if menufunction %}{{ menufunction.name }}{% else %}MenuHeaders{% endif %}</h1>
+        {% for menuheader in menuheaders %}
+            <div class="item">
+                <a href="{{ menuheader.get_absolute_url }}">
+                <img src="{% if menuheader.image %}{{ menuheader.image.url }}
+                          {% else %}{% static "img/no_image.png" %}{% endif %}">
+                </a>
+                <a href="{{ menuheader.get_absolute_url }}">{{ menuheader.name }}
+                </a><br>
+                ${{ menuheader.price }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

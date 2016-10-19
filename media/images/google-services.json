@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "417316892426",
+    "firebase_url": "https://fcmclient-a6ce0.firebaseio.com",
+    "project_id": "fcmclient-a6ce0",
+    "storage_bucket": "fcmclient-a6ce0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417316892426:android:01dd1b55c68186a7",
+        "android_client_info": {
+          "package_name": "vn.pmdata.training.fcmclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417316892426-6cr4c139d3cc3qk7i0nidf2rpavl0l4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-58t5h087M1AmH--MFTrOf0rrNpF7vCQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

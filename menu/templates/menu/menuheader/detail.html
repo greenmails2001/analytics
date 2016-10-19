@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ object.name }}
+{% endblock %}
+{% block content %}
+    {% with menufunction=menuheader.menufunction %}
+        <h1>
+            {{ object.name }}
+        </h1>
+        <div class="module">
+            <h2>Overview</h2>
+            <p>
+                <a href="{% url "menuheader_list_menufunction" menufunction.slug %}">{{ menufunction.name }}</a>.
+                {{ menuheader.rel_menu_details.count }} modules.
+                Instructor: {{ menuheader.owner.get_username }}.{{ menuheader.owner.get_full_name }}
+            </p>
+            {{ object.description|linebreaks }}
+            {% if request.user.is_authenticated %}
+                <form action="{% url "employee_request_menuheader" %}" method="post">
+                    {{ enroll_form }}
+                    {% csrf_token %}
+                    <input type="submit" class="button" value="Request now">
+                </form>
+            {% else %}
+                <a href="{% url "employee_registration" %}" class="button">
+                    Register to request
+                </a>
+            {% endif %}
+        </div>
+    {% endwith %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}
+    {{ object.name }}
+{% endblock %}
+{% block menu %}
+
+    <!--div class="contents"-->
+        <!--h3>MenuDetails</h3-->
+        <!--ul id="modules"-->
+        <ul class="nav-menu nav nav-pills nav-stacked">
+            {% for m in object.rel_menu_details.all %}
+                <li data-id="{{ m.id }}" {% if m == menudetail %} class="selected"{% endif %}>
+                    <a href="{% url "employee_menuheader_detail_menudetail" object.id m.id %}">
+                                                    Detail <span class="order">{{ m.orderview|add:1 }} ({{ m.name }})</span>
+                    </a>
+                </li>
+            {% empty %}
+                <li>No menudetails yet.</li>
+            {% endfor %}
+        </ul>
+
+    <!--/div-->
+{% endblock %}
+{% block content %}
+    <h1>
+        {{ menudetail.name }}
+    </h1>
+        <div class="module">
+                    {% for itemcontent in menudetail.rel_itemcontents_menudetails.all %}
+                        {% with item=itemcontent.item %}
+                            {{ item.render }}
+                        {% endwith %}
+                    {% endfor %}
+
+        </div>
+
+{% endblock %}

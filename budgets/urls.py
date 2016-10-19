@@ -1,0 +1,11 @@
+from django.conf.urls import url
+from budgets import views
+
+urlpatterns = [
+    url(r'^menuheaders/$',
+        views.BudgetListView.as_view(),name='budget_menuheader_list'),
+    url(r'^menuheader/(?P<pk>\d+)/$',
+        views.BudgetDetailView.as_view(),name='budget_menuheader_detail'),
+    url(r'^menuheader/(?P<pk>\d+)/(?P<menudetail_id>\d+)/$',
+        views.BudgetDetailView.as_view(),name='budget_menuheader_detail_menudetail'),
+]
