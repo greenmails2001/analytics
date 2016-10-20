@@ -31,8 +31,9 @@ class Tasklist(models.Model):
         db_table = 'tasklist'
 
 
-class TestProfits(models.Model):
-    profitid = models.PositiveIntegerField(db_column='ProfitID', primary_key=True)
+class Profits(models.Model):
+    #profit_id = models.PositiveIntegerField(db_column='ProfitID', primary_key=True)
+    profitid = models.AutoField(db_column='ProfitID', primary_key=True)
     taskid = models.TextField(db_column='TaskID')  # Field name made lowercase.
     name = models.TextField(db_column='Name', blank=True, null=True)  # Field name made lowercase.
     update = models.DateTimeField(db_column='Update')  # Field name made lowercase.
@@ -49,5 +50,49 @@ class TestProfits(models.Model):
 
     class Meta:
         #managed = True
-        db_table = 'testprofits'
+        db_table = 'profits'
         unique_together = (('taskid', 'update', 'sitename'),)
+
+
+class Revenues(models.Model):
+    revenueid = models.AutoField(db_column='RevenueID', primary_key=True)
+    sitename = models.TextField(db_column='SiteName')  # Field name made lowercase.
+    revenue = models.DecimalField(db_column='Revenue', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    revenueupt = models.DecimalField(db_column='RevenueUpt', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    revenueact = models.DecimalField(db_column='RevenueAct', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    area = models.DecimalField(db_column='Area', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    unit = models.TextField(db_column='Unit', blank=True, null=True)  # Field name made lowercase.
+    duration = models.DecimalField(db_column='Duration', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    update = models.DateTimeField(db_column='Update')  # Field name made lowercase.
+    note = models.TextField(db_column='Note', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        db_table = 'revenues'
+        unique_together = (('update', 'sitename'),)
+
+
+class Budgets(models.Model):
+    budgetid = models.PositiveIntegerField(db_column='BudgetID', primary_key=True)
+    taskid = models.TextField(db_column='TaskID')  # Field name made lowercase.
+    taskname = models.TextField(db_column='TaskName', blank=True, null=True)  # Field name made lowercase.
+    update = models.DateTimeField(db_column='Update')  # Field name made lowercase.
+    unit = models.TextField(db_column='Unit', blank=True, null=True)  # Field name made lowercase.
+    qty = models.DecimalField(db_column='Qty', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    unitprice = models.DecimalField(db_column='UnitPrice', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    price = models.DecimalField(db_column='Price', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    note = models.TextField(db_column='Note', blank=True, null=True)  # Field name made lowercase.
+    reason = models.TextField(db_column='Reason', blank=True, null=True)  # Field name made lowercase.
+    qtyupt = models.DecimalField(db_column='QtyUpt', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    unitpriceupt = models.DecimalField(db_column='UnitPriceUpt', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    priceupt = models.DecimalField(db_column='PriceUpt', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    noteupt = models.TextField(db_column='NoteUpt', blank=True, null=True)  # Field name made lowercase.
+    reasonupt = models.TextField(db_column='ReasonUpt', blank=True, null=True)  # Field name made lowercase.
+    qtyact = models.DecimalField(db_column='QtyAct', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    priceact = models.DecimalField(db_column='PriceAct', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
+    noteact = models.TextField(db_column='NoteAct', blank=True, null=True)  # Field name made lowercase.
+    sitename = models.TextField(db_column='SiteName')  # Field name made lowercase.
+
+    class Meta:
+        #managed = True
+        db_table = 'budgets'
+        unique_together = [('taskid', 'update', 'sitename'),]

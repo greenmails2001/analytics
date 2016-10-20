@@ -4,7 +4,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import DetailView, ListView
 
-from budgets.models import Tasklist,  Sites #, Profits, Revenues
+from budgets.models import Tasklist,  Sites, Profits, Revenues  #, Profits, Revenues
 from menu.models import MenuHeader
 
 
@@ -19,10 +19,6 @@ class BudgetListView(LoginRequiredMixin, ListView):
 
 class BudgetDetailView(DetailView):
     model = MenuHeader
-    tasklists = Tasklist.objects.all()
-    sites = Sites.objects.all()
-    #sites.refresh_from_db()
-    #revenues = Revenues.objects.all()
     template_name = 'budgets/menuheader/detail.html'
     print('0')
 
@@ -35,17 +31,24 @@ class BudgetDetailView(DetailView):
         context = super(BudgetDetailView, self).get_context_data(**kwargs)
         # get course object
         menuheader = self.get_object()
+        tasklists = Tasklist.objects.all()
+        sites = Sites.objects.all()
+        revenues= Revenues.objects.all()
+        profits = Profits.objects.all()
 
         if 'menudetail_id' in self.kwargs:
             # get current module
 
             context['menudetail'] = menuheader.rel_menu_details.get(id=self.kwargs['menudetail_id'])
-            context['tasklists'] = self.tasklists
-            context['sites'] = self.get_queryset(self.sites)
-            #context['revenues'] = self.revenues
+            context['tasklists'] = tasklists
+            context['sites'] = sites
+            context['profits'] = profits
+            context['revenues'] = revenues
         else:
             # get first module
             context['menudetail'] = menuheader.rel_menu_details.all()[0]
-            context['tasklists'] = self.tasklists
-            #context['revenues'] = self.revenues
+            context['tasklists'] = tasklists
+            context['sites'] = sites
+            context['profits'] = profits
+            context['revenues'] = revenues
         return context
