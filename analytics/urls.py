@@ -30,7 +30,7 @@ urlpatterns = [
     url(r'^', include('menu.urls', namespace='menu')),
     url(r'^menuheader/', include('menu.urls')),
     url(r'^$', MenuHeaderListView.as_view(), name='menuheader_list'),
-    #url(r'^employees/', include('employees.urls')),
+    url(r'^employees/', include('employees.urls')),
     url(r'^budgets/', include('budgets.urls')),
 
 ]

@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% block domready %}
+    $(".dropdown-menu li a").click(function(){
+        var selText = $(this).text();
+        $(this).parents('.btn-group').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
+    });
+
+    $("#btnSearch").click(function(){
+        var info = $('.btn-select').text();
+        alert($('.btn-select').text()+", "+$('.btn-select2').text());
+    });
 {% endblock %}
 
 {% block title %}
@@ -75,15 +84,6 @@
         <div class="module">
                     {% for itemcontent in menudetail.rel_itemcontents_menudetails.all %}
                         {% with item=itemcontent.item %}
-                                <div class="col-sm-4 col-xs-12">
-                                  <div class="panel panel-default text-center">
-                                    <div class="panel-heading">
-                                      <h1>Chart</h1>
-                                    </div>
-                                    <img src="{% url "plotResults" %}">
-                                  </div>
-                                </div>
-
                                 <div class="col-sm-4 col-xs-12">
                                   <div class="panel panel-default text-center">
                                     <div class="panel-heading">

@@ -121,12 +121,14 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
     template_name = 'menu/manage/itemcontent/form.html'
 
     def get_model(self, model_name):
-        if model_name in ['text', 'video', 'image', 'file']:
+        if model_name in ['text', 'video', 'image', 'file', 'chart']:
             return apps.get_model(app_label='menu', model_name=model_name)
         return None
 
     def get_form(self, model, *args, **kwargs):
-        Form = modelform_factory(model, exclude=['owner', 'orderview', 'createddate', 'updateddate'])
+        #Form = modelform_factory(model, exclude=['owner', 'orderview', 'createddate', 'updateddate'])
+        #loai bỏ tuc la k lấy cac column owner, orderview, create...
+        Form = modelform_factory(model, exclude=['orderview', 'createddate', 'updateddate'])
         return Form(*args, **kwargs)
 
     def dispatch(self, request, menudetail_id, model_name, id=None):

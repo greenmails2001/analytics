@@ -75,6 +75,25 @@ class MenuDetail(models.Model):
         return reverse('menu:menudetail_list', args=[self.id, self.slug])
 
 
+class ChartType(models.Model):
+
+    name = models.CharField(max_length=200, db_index=True)
+    slug = models.SlugField(max_length=200, db_index=True)
+    image = models.ImageField(upload_to='image/charttype/%Y/%m/%d', blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ('name',)
+        index_together = (('id', 'slug'),)
+
+    def __str__(self):
+        #return self.name
+        return '{}. {}'.format(self.name, self.description)
+
+    def get_absolute_url(self):
+        return reverse('menu:charttype_list', args=[self.id, self.slug])
+
+
 class ItemContent(models.Model):
     menudetail = models.ForeignKey(MenuDetail, related_name='rel_itemcontents_menudetails')
     itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file')})
@@ -111,3 +130,7 @@ class Image(ItemBase):
 
 class Video(ItemBase):
     url = models.URLField()
+
+class Chart(ItemBase):
+    file = models.FileField(upload_to='charts')
+    charttype = models.ForeignKey(ChartType, related_name='rel_charts_charttypes')
