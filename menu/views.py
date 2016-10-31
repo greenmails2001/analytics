@@ -3,15 +3,12 @@ from django.apps import apps
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Count
 from django.forms import modelform_factory
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.views.generic.base import TemplateResponseMixin, View
 
-from budgets.models import Sites, Profits
-from budgets.models import Tasklist, Revenues
 from employees.forms import MenuHeaderRequestForm
 from menu.forms import MenuDetailFormSet
 from menu.models import MenuFunction, MenuHeader, MenuDetail, ItemContent
@@ -178,10 +175,10 @@ class MenuDetailItemContentListView(TemplateResponseMixin, View):
         menudetail = get_object_or_404(MenuDetail, id=menudetail_id, menuheader__owner=request.user)
         return self.render_to_response({'menudetail': menudetail})
 
-#bỏ, thay bằng: MenuHeaderDetailListView
+
 class MenuHeaderListView(TemplateResponseMixin, View):
     model = MenuHeader
-    template_name = 'menu/menuheader/main.html'
+    template_name = 'menu/menuheader/list.html'
 
     def get(self, request, menufunction=None):
         menufunctions = MenuFunction.objects.annotate(total_menuheaders=Count('rel_menu_headers_functions'))
@@ -193,86 +190,6 @@ class MenuHeaderListView(TemplateResponseMixin, View):
                                         'menufunction': menufunction,
                                         'menuheaders': menuheaders})
 
-
-class MainMenuListView(DetailView):
-    model = MenuFunction
-    template_name = 'menu/menuheader/main.html'
-    #main = kết hợp giữa
-    #template_name = 'menu/menuheader/list.html' &  #template_name = 'budgets/menuheader/detail.html'
-    print('0')
-
-    def get_queryset(self):
-        qs = super(MainMenuListView, self).get_queryset()
-        print('refresh trangxxxx')
-        return qs#.filter(employees__in=[self.request.user])
-
-    def get_context_data(self, **kwargs):
-        context = super(MainMenuListView, self).get_context_data( **kwargs)
-        # get course object
-        menufunction = self.get_object()
-        context['menufunction'] = menufunction
-        print('get_context_data 1')
-        menufunctions = MenuFunction.objects.annotate(total_menuheaders=Count('rel_menu_headers_functions'))
-        menuheaders = MenuHeader.objects.annotate(total_menudetails=Count('rel_menu_details'))
-        context['menufunctions'] = menufunctions
-        context['menuheaders'] = menuheaders
-        if 'slug' in self.kwargs:
-            print('get_context_data 2')
-            menufunction = MenuFunction.objects.get(slug=self.kwargs['slug'])
-            menuheaders = menuheaders.filter(menufunction=menufunction)
-            context['menufunction'] = menufunction
-            context['menuheaders'] = menuheaders
-            print('2')
-            tasklists = Tasklist.objects.all()
-            sites = Sites.objects.all()
-            revenues= Revenues.objects.all()
-            profits = Profits.objects.all()
-            if 'menuheader_id' in self.kwargs:
-                menuheader = MenuHeader.objects.get(id=self.kwargs['menuheader_id'])
-                context['menuheader'] = menuheader
-                print('3')
-
-                if 'menudetail_id' in self.kwargs:
-
-                    # get current module
-                    print('4')
-                    context['menudetail'] = menuheader.rel_menu_details.get(id=self.kwargs['menudetail_id'])
-                    if 'site_id' in self.kwargs:
-                        print('5')
-                        psite = Sites.objects.get(siteid=self.kwargs['site_id'])
-                        context['psite'] = psite
-                        print(psite.sitename)
-                        context['profits'] = Profits.objects.filter(sitename=psite.sitename) #profits
-                    else:
-                        print('6')
-                        context['psite'] = sites[0]
-                        print(sites[0].sitename)
-                        context['profits'] = profits
-                        print(profits[0].taskid)
-                    context['tasklists'] = tasklists
-                    context['sites'] = sites
-                    context['revenues'] = revenues
-                else:
-                    print('7')
-                    # get first module
-                    context['menudetail'] = menuheader.rel_menu_details.all()[0]
-                    context['psite'] = sites[0]
-                    context['tasklists'] = tasklists
-                    context['sites'] = sites
-                    context['profits'] = profits
-                    context['revenues'] = revenues
-            else:
-                menuheader = MenuHeader.objects.first()
-                context['menuheader'] = menuheader
-                context['menudetail'] = menuheader.rel_menu_details.all()[0]
-                context['psite'] = sites[0]
-                context['tasklists'] = tasklists
-                context['sites'] = sites
-                context['profits'] = profits
-                context['revenues'] = revenues
-        return context
-
-
 class MenuHeaderDetailView(DetailView):
     model = MenuHeader
     template_name = 'menu/menuheader/detail.html'
@@ -281,48 +198,3 @@ class MenuHeaderDetailView(DetailView):
         context = super(MenuHeaderDetailView, self).get_context_data(**kwargs)
         context['enroll_form'] = MenuHeaderRequestForm(initial={'menuheader':self.object})
         return context
-
-
-def plotResults(request,site_id):
-    #arg=siteid
-    import matplotlib
-    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-    from matplotlib.figure import Figure
-    from matplotlib.dates import DateFormatter
-    fig = Figure()
-
-    site=get_object_or_404(Sites,siteid=site_id)
-    print('plot %s' % site.sitename)
-    ax=fig.add_subplot(1,1,1)
-    #p = get_object_or_404(Profits, sitename = '124_Villa-Park') # Get the poll object from django
-    profits = Profits.objects.filter(sitename=site.sitename)
-    numTests = profits.count()
-    x = matplotlib.numpy.arange(1,numTests)
-
-    prices = [profit.price for profit in profits]
-    updates = [profit.update for profit in profits]
-
-    ind = matplotlib.numpy.arange(numTests) # the x locations for the groups
-
-    cols = ['red','orange','yellow','green','blue','purple','indigo']*10
-
-    cols = cols[0:len(ind)]
-    ax.bar(ind, prices,color=cols)
-
-    ax.set_xticks(ind + 0.5)
-    ax.set_xticklabels(updates)
-
-    ax.set_xlabel("Updates")
-    ax.set_ylabel("Prices")
-
-    #ax.set_xticklabels(names)
-    #site= '124_Villa-Park'
-    title = u"Dynamically Generated: %s" % site.sitename
-    ax.set_title(title)
-
-    #ax.grid(True)
-    canvas = FigureCanvas(fig)
-    response = HttpResponse(content_type='image/png')
-
-    canvas.print_png(response)
-    return response

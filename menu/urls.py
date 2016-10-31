@@ -33,15 +33,9 @@ urlpatterns = [
         views.ItemContentDeleteView.as_view(), name='menudetail_itemcontent_delete'),
     url(r'^menudetail/(?P<menudetail_id>\d+)/$',
         views.MenuDetailItemContentListView.as_view(), name='menudetail_itemcontent_list'),
-    #url(r'^menufunction/(?P<menufunction>[\w-]+)/$',
-    #    views.MenuHeaderListView.as_view(), name='menuheader_list_menufunction'),
-    url(r'^menufunction/(?P<slug>[\w-]+)/$',
-        views.MainMenuListView.as_view(), name='mainmenu_list_menufunction'),
-    url(r'^menufunction/(?P<slug>[\w-]+)/(?P<menuheader_id>\d+)/(?P<menudetail_id>\d+)/$',
-        views.MainMenuListView.as_view(),name='mainmenu_list_menufunction_header_detail'),
-    url(r'^menufunction/(?P<slug>[\w-]+)/(?P<menuheader_id>\d+)/(?P<menudetail_id>\d+)/(?P<site_id>\d+)/$',
-        views.MainMenuListView.as_view(),name='mainmenu_list_menufunction_header_detail_filtersite'),
+
+    url(r'^menufunction/(?P<menufunction>[\w-]+)/$',
+        views.MenuHeaderListView.as_view(), name='menuheader_list_menufunction'),
     url(r'^(?P<slug>[\w-]+)/$',
         views.MenuHeaderDetailView.as_view(), name='menuheader_detail'),
-    url(r'^results/(?P<site_id>\d+)result.png$', views.plotResults,name='plotResults'),
 ]
