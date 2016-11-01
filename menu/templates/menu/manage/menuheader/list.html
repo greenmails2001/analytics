@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Menu header{% endblock %}
+{% block content %}
+<h1>Menu header</h1>
+    <div class="module">
+        {% for menuheader in object_list %}
+            <div class="menuheader-info">
+                <h3>{{ menuheader.name }}</h3>
+                <p>
+                    <a href="{% url "menuheader_edit" menuheader.id %}">Edit</a>
+                    <a href="{% url "menuheader_delete" menuheader.id %}">Delete</a>
+                    <a href="{% url "menuheader_menudetail_update" menuheader.id %}">Edit menudetails</a>
+                    {% if menuheader.rel_menu_details.count > 0 %}
+                        <a href="{% url "menudetail_itemcontent_list" menuheader.rel_menu_details.first.id %}">Manage itemcontents</a>
+                    {% endif %}
+                </p>
+            </div>
+        {% empty %}
+            <p>You haven't created any menu yet.</p>
+        {% endfor %}
+        <p>
+            <a href="{% url "menuheader_create" %}" class="button">Create new menuheader</a>
+        </p>
+    </div>
+{% endblock %}

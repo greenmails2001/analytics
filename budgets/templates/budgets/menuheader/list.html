@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}My menuheaders{% endblock %}
+{% block content %}
+    <h1>My menuheaders</h1>
+    <div class="module">
+        {% for menuheader in object_list %}
+            <div class="course-info">
+                <h3>{{ menuheader.name }}</h3>
+                <p><a href="{% url "budget_menuheader_detail" menuheader.id %}">Access menuheaders</a></p>
+            </div>
+        {% empty %}
+            <p>
+                You are not request in any menuheaders yet.
+                <a href="{% url "menuheader_list" %}">Browse menuheaders</a>
+                to request in a menuheader.
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

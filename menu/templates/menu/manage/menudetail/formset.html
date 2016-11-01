@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+    Edit "{{ menuheader.name }}"
+{% endblock %}
+{% block content %}
+    <h1>Edit "{{ menuheader.name }}"</h1>
+    <div class="module">
+        <h2>Menu details</h2>
+        <form action="" method="post">
+            {{ formset }}
+            {{ formset.management_form }}
+            {% csrf_token %}
+            <input type="submit" class="button" value="Save menudetails">
+        </form>
+    </div>
+{% endblock %}
