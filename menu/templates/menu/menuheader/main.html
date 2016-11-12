@@ -118,49 +118,8 @@
         <div class="module">
                     {% for itemcontent in menudetail.rel_itemcontents_menudetails.all %}
                         {% with item=itemcontent.item %}
-                                <div class="col-sm-4 col-xs-12">
-                                  <div class="panel panel-default text-center">
-                                    <div class="panel-heading">
-                                      <h1>Chart:{{ psite.siteid }}-{{ psite.sitename }}</h1>
-                                    </div>
-                                    <img src="{% url "plotResults" psite.siteid %}">
-                                  </div>
-                                </div>
-
-                                <div class="col-sm-4 col-xs-12">
-                                  <div class="panel panel-default text-center">
-                                    <div class="panel-heading">
-                                      <h1>Profit: {{item}}</h1>
-                                    </div>
-                                    <div class="panel-body">
-                                      <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
-                                        {% for profit in profits %}
-                                            <p>{{ profit.taskid }} - {{ profit.sitename }} - {{ profit.profit }}- {{ profit.price }}</p>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="panel-footer">
-                                      <button class="btn btn-lg">Detail</button>
-                                    </div>
-
-                                  </div>
-                                </div>
-                                <div class="col-sm-4 col-xs-12">
-                                  <div class="panel panel-default text-center">
-                                    <div class="panel-heading">
-                                      <h1>Revenue: {{item}}</h1>
-                                    </div>
-                                    <div class="panel-body">
-                                        <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
-                                        {% for revenue in revenues %}
-                                            <p>{{ revenue.area }} - {{ revenue.sitename }} - {{ revenue.revenue }}- {{ revenue.duration }}</p>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="panel-footer">
-                                      <button class="btn btn-lg">Detail</button>
-                                    </div>
-
-                                  </div>
-                                </div>
+                            <h2>{{ item.title }}</h2>
+                            {{ item.render }}
                         {% endwith %}
 
                     {% endfor %}

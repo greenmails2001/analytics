@@ -13,6 +13,7 @@ from django.views.generic.base import TemplateResponseMixin, View
 from budgets.models import Sites, Profits
 from budgets.models import Tasklist, Revenues
 from employees.forms import MenuHeaderRequestForm
+from menu import forms
 from menu.forms import MenuDetailFormSet
 from menu.models import MenuFunction, MenuHeader, MenuDetail, ItemContent
 
@@ -166,7 +167,7 @@ class ItemContentDeleteView(View):
     def post(self, request, id):
         itemcontent = get_object_or_404(ItemContent, id=id, menudetail__menuheader__owner=request.user)
         menudetail = itemcontent.menudetail
-        itemcontent.itemcontent.delete()
+        itemcontent.item.delete()
         itemcontent.delete()
         return redirect('menudetail_itemcontent_list', menudetail.id)
 
@@ -326,3 +327,12 @@ def plotResults(request,site_id):
 
     canvas.print_png(response)
     return response
+
+
+def search(request):
+    query = request.GET['q']
+    from django.template import loader
+    t = loader.get_template('menu/results.html')
+    from django.template import Context
+    c = Context({ 'query': query,})
+    return HttpResponse(t.render(c))

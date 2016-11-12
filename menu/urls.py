@@ -44,4 +44,5 @@ urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/$',
         views.MenuHeaderDetailView.as_view(), name='menuheader_detail'),
     url(r'^results/(?P<site_id>\d+)result.png$', views.plotResults,name='plotResults'),
+    url(r'^results/$', views.search, name='results'),
 ]

@@ -35,8 +35,8 @@
                     <div data-id="{{ itemcontent.id }}">
                         {% with item=itemcontent.item %}
                             <p>{{ item }}({{ item|model_name }})</p>
-                            <a href="{% url "menudetail_itemcontent_update" menudetail.id item|model_name item.id %}">Edit</a>
-                            <form action="{% url "menudetail_itemcontent_delete" item.id %}" method="post">
+                            <a href="{% url "menudetail_itemcontent_update" menudetail.id item|model_name item.id %}">Edit - {{ item.id }}</a>
+                            <form action="{% url "menudetail_itemcontent_delete" itemcontent.id %}" method="post">
                                 <input type="submit" value="Delete">
                                 {% csrf_token %}
                             </form>

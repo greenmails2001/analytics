@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 from django.db import models
 # Create your models here.
 from django.template.loader import render_to_string
+
+from budgets.models import Sites, Profits
 from menu.fields import OrderField
 
 
@@ -76,7 +78,6 @@ class MenuDetail(models.Model):
 
 
 class ChartType(models.Model):
-
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True)
     image = models.ImageField(upload_to='image/charttype/%Y/%m/%d', blank=True)
@@ -96,7 +97,7 @@ class ChartType(models.Model):
 
 class ItemContent(models.Model):
     menudetail = models.ForeignKey(MenuDetail, related_name='rel_itemcontents_menudetails')
-    itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file')})
+    itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file','chart')})
     objid = models.PositiveIntegerField()
     item = GenericForeignKey('itemtype', 'objid')
     orderview = OrderField(blank=True, for_fields=['menudetail'])
@@ -117,6 +118,9 @@ class ItemBase(models.Model):
         return self.title
 
     def render(self):
+        #dang test truyen site vào render-> type content *.html
+        #test ok
+        #psite = Sites.objects.all()
         return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name), {'item': self})
 
 class Text(ItemBase):
@@ -134,3 +138,13 @@ class Video(ItemBase):
 class Chart(ItemBase):
     file = models.FileField(upload_to='charts')
     charttype = models.ForeignKey(ChartType, related_name='rel_charts_charttypes')
+    siteid = models.ForeignKey(Sites, related_name='rel_charts_sites')
+
+    def render(self):
+        #dang test truyen site vào render-> type content *.html
+        #test ok
+        print('model: render')
+        sites = Sites.objects.all()
+        profits = Profits.objects.all()
+        return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                {'item': self, 'sites': sites, 'profits':profits})

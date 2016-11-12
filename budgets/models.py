@@ -14,11 +14,15 @@ class Sites(models.Model):
     finished = models.CharField(db_column='Finished', max_length=1, blank=True, null=True)  # Field name made lowercase.
     area = models.DecimalField(db_column='Area', max_digits=65535, decimal_places=65535, blank=True, null=True)  # Field name made lowercase.
     imagelink = models.TextField(db_column='ImageLink', blank=True, null=True)  # Field name made lowercase.
+    description = models.TextField(blank=True)
 
     class Meta:
         #managed = True
         db_table = 'sites'
 
+    def __str__(self):
+        #return self.name
+        return '{}. {}'.format(self.siteid, self.sitename)
 
 class Tasklist(models.Model):
     taskid = models.TextField(db_column='TaskID', primary_key=True)  # Field name made lowercase.
