@@ -2,54 +2,74 @@
 <div class="col-sm-6 col-xs-12">
       <div class="panel panel-default text-center">
         <div class="panel-heading">
-          <h1>{{item}}</h1>
-
+            <h1>{{item}}</h1>
         </div>
         <div class="panel-body">
             <div ng-app="myApp" ng-controller="namesCtrl">
 
             <p>Type a letter in the input field:</p>
-{% verbatim %}
-            <p><input type="text" ng-model="test"></p>
-            <ul>
-              <li ng-repeat="x in names | filter:test">
-                <a>{{ x.name }}</a>
-              </li>
-            </ul>
+            {% verbatim %}
+                <p><input type="text" ng-model="test"></p>
+                <ul>
+                  <li ng-repeat="x in names | filter:test">
+                    <a>{{ x.name }}</a>
+                  </li>
+                </ul>
 
-            <select  ng-model="selectedSite">
-                <option ng-repeat="x in names">
-                    {{ x.id }}
-                </option>
+                <select  ng-model="selectedSite" onchange="abc()">
+                    <option ng-repeat="x in names">
+                        {{ x.id }}
+                    </option>
 
-            </select>
-            <a>{{ selectedSite }}</a>
+                </select>
+                <a>Site: {{ selectedSite }}</a>
+
             {% endverbatim %}
-            <img src="{% url "plotResults" %}{% verbatim %} {{ selectedSite }} {% endverbatim %}">
 
+            Foo:
+            <select id="foo">
+                <option value="">---</option>
+                {% for value in sites %}
+                  <option value="{{ value.siteid }}">{{ value.sitename }}</option>
+                {% endfor %}
+            </select>
 
-        <img src="{% url 'plotResults' 123 %}">
             </div>
             <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
-            [{% for site in sites %}
-                {% if not forloop.first %},{% endif %}
-                '{{site.sitename}}'
-            {% endfor %}]
+            <img id="{{ item.id }}" src="{% url "plotResults" %}" alt="your imageaaaa" />
         </div>
         <div class="panel-footer">
           <button class="btn btn-lg">Detail</button>
+
         </div>
       </div>
 
 </div>
 
-<script>
+<script type="text/javascript">
 
-angular.module('myApp', []).controller('namesCtrl', function($scope) {
-    var array_sites=[{% for site in sites %}
-                {% if not forloop.first %},{% endif %}
-                    {id:'{{site.siteid}}', name:'{{site.sitename}}'}
-            {% endfor %}];
-    $scope.names = array_sites;
-});
+    angular.module('myApp', []).controller('namesCtrl', function($scope) {
+        var array_sites=[{% for site in sites %}
+                    {% if not forloop.first %},{% endif %}
+                        {id:'{{site.siteid}}', name:'{{site.sitename}}'}
+                {% endfor %}];
+        $scope.names = array_sites;
+    });
+    //var varid=123;
+    var varurl='{% url "plotResults" 123 %}';
+
+    urlMap = {
+        {% for value in sites %}
+            '{{ value.siteid }}' : varurl.replace(/123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
+        {% endfor %}
+    };
+
+    $(function() {
+        $("#foo").change(function() {
+            alert($(this).val()+ {{ item.id }});
+            $('#{{item.id}}').attr('src', urlMap[$(this).val()]);
+            //location.href = urlMap[$(this).val()];
+        });
+    });
+
 </script>
