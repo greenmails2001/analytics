@@ -1,8 +1,78 @@
-<div class="col-sm-6 col-xs-12">
-                                  <div class="panel panel-default text-center">
-                                    <div class="panel-heading">
-                                      <h1>Chart:{{ psite.siteid }}-{{ psite.sitename }}</h1>
-                                    </div>
-                                    <img src="{% url "plotResults" psite.siteid %}">
-                                  </div>
-                                </div>
+{% load staticfiles %}
+<link href="{% static "css/tasklevel.css" %}" rel="stylesheet" type="text/css">
+<script src="{% static "js/jquery.aCollapTable.js" %}"></script>
+
+<script>
+$(document).ready(function(){
+  $('.collaptable').aCollapTable({
+    startCollapsed: true,
+    addColumn: false,
+    plusButton: '<span class="i">+</span>',
+    minusButton: '<span class="i">-</span>'
+  });
+});
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<div class="col-sm-12 col-xs-12">
+    <h1>jQuery aCollapTable Plugin Demos</h1>
+    <div class="well">
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand">+ Expand</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse">- Collapse</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand-all ">+ Expand All</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse-all">- Collapse All</a>
+    </div>
+
+    <table class="collaptable table table-striped">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+          <th>Unit</th>
+          <th>Qty</th>
+          <th>Unitprice</th>
+          <th>Price</th>
+          <th>Note</th>
+          <th>Reason</th>
+      </tr>
+        {% for value in sites %}
+
+            <tr data-id="{{ value.siteid }}" data-parent="" class="parent">
+                <td>{{ value.siteid }}</td>
+                <td>{{ value.sitename }}</td>
+                <td>{{ value.manager }}</td>
+                <td>{{ value.phone }}</td>
+                <td>{{ value.startdate }}</td>
+                <td>{{ value.enddate }}</td>
+            </tr>
+                        {% for b in budgets %}
+                {% if b.SiteID == value.siteid %}
+                    <tr data-id="{{ b.TaskKey }}" data-parent="{{ b.TaskKeyParent }}"
+                        class="{% if b.taskid == 'A' %} aaa {% else %} child {% endif %}">
+                    <td class="{% if b.taskid == '3' %}warning{% endif %}">{{ b.taskid }}</td>
+                    <td>{{ b.taskname }}</td>
+                    <td>{{ b.unit }}</td>
+                    <td>{{ b.qty }}</td>
+                    <td>{{ b.unitprice }}</td>
+                    <td>{{ b.price }}</td>
+                    <td>{{ b.note }}</td>
+                    <td>{{ b.reason }}</td>
+                {% endif %}
+            {% endfor %}
+
+        {% endfor %}
+    </table>
+</div>

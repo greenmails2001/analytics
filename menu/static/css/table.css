@@ -1,0 +1,15 @@
+table, tr, td, th
+{
+    border: 1px solid black;
+    border-collapse:collapse;
+}
+
+img.button_open{
+  content:url('http://code.stephenmorley.org/javascript/collapsible-lists/button-open.png');
+  cursor:pointer;
+}
+
+img.button_closed{
+  content: url('http://code.stephenmorley.org/javascript/collapsible-lists/button-closed.png');
+  cursor:pointer;
+}

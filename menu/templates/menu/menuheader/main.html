@@ -118,7 +118,7 @@
         <div class="module">
                     {% for itemcontent in menudetail.rel_itemcontents_menudetails.all %}
                         {% with item=itemcontent.item %}
-                            <h2>{{ item.title }}</h2>
+
                             {{ item.render }}
                         {% endwith %}
 

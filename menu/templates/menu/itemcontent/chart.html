@@ -36,7 +36,9 @@
 
             </div>
             <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
-            <img id="{{ item.id }}" src="{% url "plotResults" %}" alt="your imageaaaa" />
+            <div class="thumbnail">
+                <img id="{{ item.id }}" src="{% url "plotResults" %}" alt="your imageaaaa" />
+            </div>
         </div>
         <div class="panel-footer">
           <button class="btn btn-lg">Detail</button>
@@ -66,7 +68,7 @@
 
     $(function() {
         $("#foo").change(function() {
-            alert($(this).val()+ {{ item.id }});
+            alert($(this).val()+'-'+ {{ item.id }});
             $('#{{item.id}}').attr('src', urlMap[$(this).val()]);
             //location.href = urlMap[$(this).val()];
         });

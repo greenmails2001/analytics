@@ -4,9 +4,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 # Create your models here.
+from django.db.models import Max
 from django.template.loader import render_to_string
 
-from budgets.models import Sites, Profits
+from budgets.models import Sites, Profits, Budgets
 from menu.fields import OrderField
 
 
@@ -97,7 +98,7 @@ class ChartType(models.Model):
 
 class ItemContent(models.Model):
     menudetail = models.ForeignKey(MenuDetail, related_name='rel_itemcontents_menudetails')
-    itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file','chart')})
+    itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file','chart','profit_table')})
     objid = models.PositiveIntegerField()
     item = GenericForeignKey('itemtype', 'objid')
     orderview = OrderField(blank=True, for_fields=['menudetail'])
@@ -148,3 +149,72 @@ class Chart(ItemBase):
         profits = Profits.objects.all()
         return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
                                 {'item': self, 'sites': sites, 'profits':profits})
+
+class Profit_Table(ItemBase):
+    content = models.TextField()
+
+    def render(self):
+        #dang test truyen site vào render-> type content *.html
+        #test ok
+        print('model: render table')
+        sites = Sites.objects.all()
+
+        budgets = Budgets.objects.raw(
+            '''
+            SELECT budgets.*, maxdatebudgets."SiteID",
+
+		    (case when budgets."TaskID"='A' then concat(maxdatebudgets."SiteID",'0A')
+		    else concat(maxdatebudgets."SiteID",replace(budgets."TaskID",'.','_'))
+		     end) "TaskKey",
+
+            (CASE WHEN budgets."TaskID"<>'A' THEN
+                (case  when position('.' in budgets."TaskID")>0 then
+                    concat(maxdatebudgets."SiteID",replace(substring(budgets."TaskID", 1, length(budgets."TaskID")-position('.' in (reverse(budgets."TaskID")))),'.','_'))
+                    else concat(maxdatebudgets."SiteID",'0A')
+                end
+                )
+	    	    when budgets."TaskID"='A' then maxdatebudgets."SiteID"
+    		END) "TaskKeyParent"
+            FROM budgets,
+            (select "TaskID",max("Update") as "maxUpdate","SiteName",
+            (select sites."SiteID" from sites where sites."SiteName"=budgets."SiteName") "SiteID"
+            from budgets
+            group by "TaskID","SiteName"
+            order by "TaskID","SiteName") as maxdatebudgets
+            where budgets."TaskID"=maxdatebudgets."TaskID" and budgets."SiteName"=maxdatebudgets."SiteName"
+            and budgets."Update"=maxdatebudgets."maxUpdate"  and char_length(budgets."TaskID") <= 4
+            order by budgets."SiteName", "TaskKey"
+            '''
+        )
+        ######chay duoc nhung qua chậm
+        #arraytasks=[]
+        #for k in range(len(list(budgets))):
+        #    arraytasks.append({'sitename':budgets[k].sitename,'taskid':budgets[k].taskid})
+
+        #arraytasks = [{'sitename':budgets[k].sitename,'taskid':budgets[k].taskid} for k in range(len(list(budgets))) ]
+
+
+
+        #budgets=Budgets.objects.all().aggregate(Max('update'))
+
+        #budgets = Budgets.objects.values('taskid','sitename','update').filter(taskid__in=(
+        #    Budgets.objects
+        #        .values('taskid','sitename')
+        #        .annotate(Max('update'))
+        #        .values_list('taskid', flat=True)
+        #))
+
+        #budgets=Budgets.objects.annotate(maxdate=Max('update')).order_by('taskid','sitename').values_list('taskid','sitename')
+        #budgets = Budgets.objects.filter(
+        #    budgetsmax.filter(taskid__isnull=False)).filter(
+         #   budgetsmax.filter(sitename__isnull=False)).distinct().values_list('taskid','sitename','update')
+
+        #budgetsz=Budgets.objects.annotate(maxdate=Max('update')).order_by('taskid','sitename').\
+        #    values_list('taskid','sitename','maxdate').\
+        #    filter(budgets__taskid__isnull=False).\
+        #    filter(budgets__sitename__isnull=False)
+
+
+        #budgets = Budgets.objects.all()
+        return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                {'item': self, 'sites': sites, 'budgets':budgets})

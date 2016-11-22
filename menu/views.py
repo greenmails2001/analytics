@@ -125,7 +125,7 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
     template_name = 'menu/manage/itemcontent/form.html'
 
     def get_model(self, model_name):
-        if model_name in ['text', 'video', 'image', 'file', 'chart']:
+        if model_name in ['text', 'video', 'image', 'file', 'chart','profit_table']:
             return apps.get_model(app_label='menu', model_name=model_name)
         return None
 

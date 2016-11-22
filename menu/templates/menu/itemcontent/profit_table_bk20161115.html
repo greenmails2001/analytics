@@ -1,0 +1,77 @@
+{% load staticfiles %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<link href="{% static "css/table.css" %}" rel="stylesheet">
+<script type='text/javascript'>
+$(function(){
+    $('.tasklevel').click(function(){
+        $(this).nextUntil('tr.tasklevel').slideToggle(100);
+    });
+    $('.tasklevel2').click(function(){
+        //chỗ này chưa xử lý duoc với nhiều sub task.
+        if($(this).nextUntil('tr.tasklevel2').value==true) {
+            $(this).nextUntil('tr.tasklevel2').slideToggle(100);
+        }else {
+            $(this).nextUntil('tr.tasklevel').slideToggle(100);
+        }
+
+    });
+});
+
+</script>
+
+<table border="0">
+    <thead>
+		<tr>
+			<th>Regian</th>
+			<th>Q1 2010</th>
+			<th>Q2 2010</th>
+			<th>Q3 2010</th>
+			<th>Q4 2010</th>
+		</tr>
+	</thead>
+    <tr class="tasklevel">
+        <td colspan="2">Management
+        </td>
+    </tr>
+    <tr class="tasklevel2">
+        <td colspan="2">Management2
+        </td>
+    </tr>
+  <tr>
+    <td>data</td>
+    <td>data</td>
+  </tr>
+    <tr class="tasklevel2">
+        <td colspan="2">Management3
+        </td>
+    </tr>
+  <tr>
+    <td>data</td>
+    <td>data</td>
+  </tr>
+
+    <tr class="tasklevel">
+        <td colspan="2">Accounting
+        </td>
+    </tr>
+    <tr class="tasklevel2">
+        <td colspan="2">Accounting2
+        </td>
+    </tr>
+  <tr>
+    <td>date</td>
+    <td>data</td>
+  </tr>
+  <tr>
+    <td>data</td>
+    <td>data</td>
+  </tr>
+    <tr class="tasklevel2">
+        <td colspan="2">Accounting3
+        </td>
+    </tr>
+  <tr>
+    <td>data</td>
+    <td>data</td>
+  </tr>
+</table>

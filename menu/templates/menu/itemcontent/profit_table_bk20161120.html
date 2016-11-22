@@ -1,0 +1,139 @@
+{% load staticfiles %}
+<link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+
+<script src="{% static "js/jquery.aCollapTable.js" %}"></script>
+
+<script>
+$(document).ready(function(){
+  $('.collaptable').aCollapTable({
+    startCollapsed: true,
+    addColumn: false,
+    plusButton: '<span class="i">+</span>',
+    minusButton: '<span class="i">-</span>'
+  });
+});
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+<div class="col-sm-6 col-xs-12">
+    <h1>jQuery aCollapTable Plugin Demos</h1>
+    <div class="well">
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand">+ Expand</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse">- Collapse</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand-all ">+ Expand All</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse-all">- Collapse All</a>
+    </div>
+
+    <table class="collaptable table table-striped">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      <tr data-id="a1" data-parent="">
+        <td>a1</td>
+        <td>Element 1</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a1_1" data-parent="a1">
+        <td>a1.1</td>
+        <td>Element 1</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a1_2" data-parent="a1">
+        <td>a1.2</td>
+        <td>Element a1.2</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a1_2_1" data-parent="a1_2">
+        <td>a1.2.1</td>
+        <td>Element 1.2.1</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a1_2_2" data-parent="a1_2">
+        <td>a1.2.2</td>
+        <td>Element 7</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a1_2_3" data-parent="a1_2">
+        <td>a1.2.3</td>
+        <td>Element 8</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a2" data-parent="">
+        <td>a2</td>
+        <td>Element 4</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+      <tr data-id="a2_1" data-parent="a2">
+        <td>a2.1</td>
+        <td>Element 5</td>
+        <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</td>
+      </tr>
+    </table>
+</div>
+
+<div class="col-sm-12 col-xs-12">
+    <h1>jQuery aCollapTable Plugin Demos</h1>
+    <div class="well">
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand">+ Expand</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse">- Collapse</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand-all ">+ Expand All</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse-all">- Collapse All</a>
+    </div>
+
+    <table class="collaptable table table-striped">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+
+        {% for value in sites %}
+
+            <tr data-id="{{ value.siteid }}" data-parent="">
+                <td>{{ value.siteid }}</td>
+                <td>{{ value.sitename }}</td>
+                <td>{{ value.manager }}</td>
+                <td>{{ value.phone }}</td>
+                <td>{{ value.startdate }}</td>
+                <td>{{ value.enddate }}</td>
+            </tr>
+            {% for b in budggets %}
+                {% if b.siteid == value.siteid %}
+                    <tr data-id="{{ b.taskkey }}" data-parent="{{ b.taskkeyparent }}">
+                    <td>{{ b.taskkey }}</td>
+                    <td>{{ b.sitename }}</td>
+                    <td>{{ b.taskparent }}</td>
+                    <td>{{ b.unit }}</td>
+                    <td>{{ b.unitprice }}</td>
+                    <td>{{ b.price }}</td>
+                    <td>{{ b.note }}</td>
+                    <td>{{ b.reason }}</td>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </table>
+
+</div>
