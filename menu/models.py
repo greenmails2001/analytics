@@ -96,9 +96,19 @@ class ChartType(models.Model):
         return reverse('menu:charttype_list', args=[self.id, self.slug])
 
 
+class MenuDetailEmployees(models.Model):
+    menudetail = models.ForeignKey(MenuDetail, related_name='rel_mdes_mds')
+    employee = models.ForeignKey(User, related_name='rel_mdes_users')
+    #description = models.TextField(max_length=10,blank=True)#
+    description = models.CharField(max_length=200, db_index=True)
+    available = models.BooleanField(default=True)
+    createddate = models.DateTimeField(auto_now_add=True)
+    updateddate = models.DateTimeField(auto_now=True)
+
+
 class ItemContent(models.Model):
     menudetail = models.ForeignKey(MenuDetail, related_name='rel_itemcontents_menudetails')
-    itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file','chart','profit_table')})
+    itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file','chart','profit_table','url')})
     objid = models.PositiveIntegerField()
     item = GenericForeignKey('itemtype', 'objid')
     orderview = OrderField(blank=True, for_fields=['menudetail'])
@@ -106,6 +116,8 @@ class ItemContent(models.Model):
     class Meta:
         ordering = ['orderview']
 
+
+##########
 class ItemBase(models.Model):
     owner = models.ForeignKey(User, related_name='%(class)s_related')
     title = models.CharField(max_length=250)
@@ -136,6 +148,10 @@ class Image(ItemBase):
 class Video(ItemBase):
     url = models.URLField()
 
+class Url(ItemBase):
+    url = models.CharField(max_length=250)
+    icon = models.FileField(upload_to='icons')
+
 class Chart(ItemBase):
     file = models.FileField(upload_to='charts')
     charttype = models.ForeignKey(ChartType, related_name='rel_charts_charttypes')
@@ -145,10 +161,19 @@ class Chart(ItemBase):
         #dang test truyen site vào render-> type content *.html
         #test ok
         print('model: render')
-        sites = Sites.objects.all()
-        profits = Profits.objects.all()
-        return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                {'item': self, 'sites': sites, 'profits':profits})
+        if self.siteid_id == '123':
+            print('profits: siteid %s' %{self.siteid_id})
+            sites = Sites.objects.all()
+            tables = Profits.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'sites': sites, 'tables':tables})
+        else:
+            print('budgets: siteid %s' %{self.siteid_id})
+            sites = Sites.objects.all()
+            tables = Budgets.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'sites': sites, 'tables':tables})
+
 
 class Profit_Table(ItemBase):
     content = models.TextField()
@@ -157,6 +182,8 @@ class Profit_Table(ItemBase):
         #dang test truyen site vào render-> type content *.html
         #test ok
         print('model: render table')
+
+
         sites = Sites.objects.all()
 
         budgets = Budgets.objects.raw(

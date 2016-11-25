@@ -125,7 +125,7 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
     template_name = 'menu/manage/itemcontent/form.html'
 
     def get_model(self, model_name):
-        if model_name in ['text', 'video', 'image', 'file', 'chart','profit_table']:
+        if model_name in ['text', 'video', 'image', 'file', 'chart', 'profit_table', 'url']:
             return apps.get_model(app_label='menu', model_name=model_name)
         return None
 
@@ -195,7 +195,7 @@ class MenuHeaderListView(TemplateResponseMixin, View):
                                         'menuheaders': menuheaders})
 
 
-class MainMenuListView(DetailView):
+class MainMenuListView(LoginRequiredMixin,DetailView):
     model = MenuFunction
     template_name = 'menu/menuheader/main.html'
     #main = kết hợp giữa
@@ -204,73 +204,50 @@ class MainMenuListView(DetailView):
 
     def get_queryset(self):
         qs = super(MainMenuListView, self).get_queryset()
-        print('refresh trangxxxx')
+        print('refresh trangxxxx %s' %{qs})
         return qs#.filter(employees__in=[self.request.user])
 
     def get_context_data(self, **kwargs):
         context = super(MainMenuListView, self).get_context_data( **kwargs)
         # get course object
-        menufunction = self.get_object()
-        context['menufunction'] = menufunction
+        #menufunction = self.get_object()
+        #context['menufunction'] = menufunction
         print('get_context_data 1')
         menufunctions = MenuFunction.objects.annotate(total_menuheaders=Count('rel_menu_headers_functions'))
         menuheaders = MenuHeader.objects.annotate(total_menudetails=Count('rel_menu_details'))
-        context['menufunctions'] = menufunctions
-        context['menuheaders'] = menuheaders
+
         if 'slug' in self.kwargs:
             print('get_context_data 2')
             menufunction = MenuFunction.objects.get(slug=self.kwargs['slug'])
             menuheaders = menuheaders.filter(menufunction=menufunction)
-            context['menufunction'] = menufunction
-            context['menuheaders'] = menuheaders
-            print('2')
-            tasklists = Tasklist.objects.all()
-            sites = Sites.objects.all()
-            revenues= Revenues.objects.all()
-            profits = Profits.objects.all()
+
+            print('1.menufunc slug %s' %{menufunction.slug} )
+
             if 'menuheader_id' in self.kwargs:
                 menuheader = MenuHeader.objects.get(id=self.kwargs['menuheader_id'])
-                context['menuheader'] = menuheader
-                print('3')
+                print('2.menuheader %s' %{menuheader.id} )
 
                 if 'menudetail_id' in self.kwargs:
-
                     # get current module
-                    print('4')
-                    context['menudetail'] = menuheader.rel_menu_details.get(id=self.kwargs['menudetail_id'])
-                    if 'site_id' in self.kwargs:
-                        print('5')
-                        psite = Sites.objects.get(siteid=self.kwargs['site_id'])
-                        context['psite'] = psite
-                        print(psite.sitename)
-                        context['profits'] = Profits.objects.filter(sitename=psite.sitename) #profits
-                    else:
-                        print('6')
-                        context['psite'] = sites[0]
-                        print(sites[0].sitename)
-                        context['profits'] = profits
-                        print(profits[0].taskid)
-                    context['tasklists'] = tasklists
-                    context['sites'] = sites
-                    context['revenues'] = revenues
+                    menudetail = menuheader.rel_menu_details.get(id=self.kwargs['menudetail_id'])
+                    print('3.menudetail id %s' %{menudetail.id} )
+
                 else:
                     print('7')
                     # get first module
-                    context['menudetail'] = menuheader.rel_menu_details.all()[0]
-                    context['psite'] = sites[0]
-                    context['tasklists'] = tasklists
-                    context['sites'] = sites
-                    context['profits'] = profits
-                    context['revenues'] = revenues
+                    menudetail = menuheader.rel_menu_details.all()[0]
+                    print('4.menudetail id %s' %{menudetail.id} )
             else:
-                menuheader = MenuHeader.objects.first()
-                context['menuheader'] = menuheader
-                context['menudetail'] = menuheader.rel_menu_details.all()[0]
-                context['psite'] = sites[0]
-                context['tasklists'] = tasklists
-                context['sites'] = sites
-                context['profits'] = profits
-                context['revenues'] = revenues
+                print('5')
+                menuheader = menuheaders.filter(menufunction=menufunction).first()
+                menudetail = menuheader.rel_menu_details.first()
+                print('5.menuheader %s' %{menuheader} )
+                print('6.menudetail id %s' %{menudetail} )
+        context['menufunctions'] = menufunctions
+        context['menuheaders'] = menuheaders
+        context['menufunction'] = menufunction
+        context['menuheader'] = menuheader
+        context['menudetail'] = menudetail
         return context
 
 
