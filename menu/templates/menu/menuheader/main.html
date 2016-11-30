@@ -7,9 +7,7 @@
     {% endif %}
 {% endblock %}
 {% block header %}
-    <li {% if not menufunction %}class="active"{% endif %}>
-        <a href="{% url "mainmenu_list" %}">All</a>
-    </li>
+
     {% for f in menufunctions %}
         <li {% if menufunction == f %}class="active"{% endif %}>
             <a href="{% url "mainmenu_list_menufunction" f.slug %}">

@@ -1,0 +1,35 @@
+table {
+	width: 750px;
+	border-collapse: collapse;
+	margin:50px auto;
+}
+
+th {
+	background: #3498db;
+	color: white;
+	font-weight: bold;
+}
+
+tr.parent
+{
+	color: #3498db;
+    cursor:pointer;
+}
+
+tr.aaa
+{
+	color: #c32f10;
+    cursor:pointer;
+}
+
+tr.child
+{
+	color: #555555;
+    cursor:pointer;
+}
+
+td.warning
+{
+	color: #f1f456;
+    cursor:pointer;
+}

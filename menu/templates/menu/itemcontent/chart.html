@@ -16,26 +16,31 @@
             <div class="thumbnail">
                 <img id="chart_{{ item.id }}" src="{% url "plotResults" %}" alt="your imageaaaa" />
             </div>
-            {% if item.siteid_id == '123' %}
-                  Site 123-Profit
-                  {% for b in tables %}
-                      {{ b.profitid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.revenue }}-{{ b.profit }}
+            {% if item.datatype.slug == 'sitestable' %}
+                  Site
+                  {% for b in sites %}
+                      {{ b.siteid }}-{{ b.sitename }}-{{ b.manage }}-{{ b.phone }}-{{ b.area }}
                   {% endfor %}
-              {% else %}
-                  Other - Budget
+              {% elif item.datatype.slug == 'budgetstable' %}
+                  Budget
                   {% for b in tables %}
                       {{ b.budgetid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.update }}-{{ b.qty }}
+                  {% endfor %}
+                {% elif item.datatype.slug == 'profitstable' %}
+                    Profit
+                  {% for b in tables %}
+                      {{ b.profitid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.revenue }}-{{ b.profit }}
                   {% endfor %}
               {% endif %}
         </div>
         <div class="panel-footer">
           <button class="btn btn-lg">
-              {% if item.siteid_id == '123' %}
-                  Site 123
-
-              {% else %}
-                  Detail
-
+              {% if item.datatype.slug == 'sitestable' %}
+                  Sites
+              {% elif item.datatype.slug == 'budgetstable' %}
+                  Budgets
+                {% elif item.datatype.slug == 'profitstable' %}
+                  Profits
               {% endif %}
           </button>
         </div>

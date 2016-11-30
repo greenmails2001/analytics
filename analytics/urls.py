@@ -19,7 +19,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
-from menu.views import MenuHeaderListView, MainMenuListView
+from menu import views
+from menu.views import MenuHeaderListView, MainMenuListView, homepage
 
 urlpatterns = [
 
@@ -30,7 +31,7 @@ urlpatterns = [
     url(r'^', include('menu.urls', namespace='menu')),
     url(r'^menuheader/', include('menu.urls')),
     #url(r'^$', MenuHeaderListView.as_view(), name='menuheader_list'),
-    url(r'^$', MainMenuListView.as_view(), name='mainmenu_list'),
+    url(r'^$', views.homepage, name='homepage'),
     url(r'^employees/', include('employees.urls')),
     url(r'^budgets/', include('budgets.urls')),
 

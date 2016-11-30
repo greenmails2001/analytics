@@ -4,11 +4,12 @@
 {% block title %}
     MenuDetail {{ menudetail.orderview|add:1 }}: {{ menudetail.name }}
 {% endblock %}
-{% block content %}
+
+{% block menu %}
+    <ul class="nav nav-pills nav-stacked nav-menu" >
     {% with menuheader=menudetail.menuheader %}
-        <h1>Menuheader "{{ menuheader.name }}"</h1>
+        <h1>{{ menuheader.name }}</h1>
         <div class="contents">
-            <h3>MenuDetails</h3>
             <ul id="modules">
                 {% for m in menuheader.rel_menu_details.all %}
                     <li data-id="{{ m.id }}" {% if m == menudetail %} class="selected"{% endif %}>
@@ -26,7 +27,13 @@
             </ul>
             <p><a href="{% url "menuheader_menudetail_update" menuheader.id %}">Edit menudetails</a></p>
         </div>
+    {% endwith %}
+    </ul>
+{% endblock %}
+{% block content %}
+
         <div class="module">
+        <div class="col-sm-8 col-xs-12">
             <h2>MenuDetail {{ menudetail.orderview|add:1 }}: {{ menudetail.name }}</h2>
             <h3>MenuDetail itemcontents:</h3>
             <div id="menudetail-itemcontents">
@@ -34,6 +41,7 @@
                     <div data-id="{{ itemcontent.id }}">
                         {% with item=itemcontent.item %}
                             <p>{{ item }}({{ item|model_name }})</p>
+
                             <a href="{% url "menudetail_itemcontent_update" menudetail.id item|model_name item.id %}">Edit - {{ item.id }}</a>
                             <form action="{% url "menudetail_itemcontent_delete" itemcontent.id %}" method="post">
                                 <input type="submit" value="Delete">
@@ -46,6 +54,8 @@
                 {% endfor %}
             </div>
             <hr>
+        </div>
+        <div class="col-sm-4 col-xs-12">
             <h3>Add new itemcontent:</h3>
             <ul class="itemtypes">
                 <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "text" %}">Text</a></li>
@@ -57,5 +67,5 @@
                 <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "url" %}">Url</a></li>
             </ul>
         </div>
-    {% endwith %}
+        </div>
 {% endblock %}

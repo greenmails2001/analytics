@@ -5,18 +5,22 @@ from django.core.urlresolvers import reverse
 from django.db import models
 # Create your models here.
 from django.db.models import Max
+from django.forms import Textarea
 from django.template.loader import render_to_string
+from django.utils.functional import lazy
 
-from budgets.models import Sites, Profits, Budgets
+from budgets.models import Sites, Profits, Budgets, Revenues, Tasklist
 from menu.fields import OrderField
+from postage.models import RegisteredVehicle, VehicleInOut, VehicleSupplier, CardType
 
 
 class MenuFunction(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
+    orderview = models.PositiveIntegerField()
 
     class Meta:
-        ordering = ('name',)
+        ordering = ('orderview','name')
 
     def __str__(self):
         return self.name
@@ -39,6 +43,7 @@ class MenuHeader(models.Model):
     available = models.BooleanField(default=True)
     createddate = models.DateTimeField(auto_now_add=True)
     updateddate = models.DateTimeField(auto_now=True)
+
     class Meta:
         ordering = ('name',)
         verbose_name = 'menu header'
@@ -78,9 +83,28 @@ class MenuDetail(models.Model):
         return reverse('menu:menudetail_list', args=[self.id, self.slug])
 
 
+class DataType(models.Model):
+    name = models.CharField(max_length=50, db_index=True)
+    slug = models.SlugField(max_length=50, db_index=True)
+    image = models.ImageField(upload_to='image/datatype/%Y/%m/%d', blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ('name',)
+        index_together = (('id', 'slug'),)
+
+    def __str__(self):
+        #return self.name
+        return '{}- {}'.format(self.id, self.name)
+
+    def get_absolute_url(self):
+        return reverse('menu:datatype_list', args=[self.id, self.slug])
+
+
 class ChartType(models.Model):
     name = models.CharField(max_length=200, db_index=True)
     slug = models.SlugField(max_length=200, db_index=True)
+    #datatype = models.ForeignKey(DataType, related_name='rel_charttypes_datatypes')
     image = models.ImageField(upload_to='image/charttype/%Y/%m/%d', blank=True)
     description = models.TextField(blank=True)
 
@@ -90,7 +114,7 @@ class ChartType(models.Model):
 
     def __str__(self):
         #return self.name
-        return '{}. {}'.format(self.name, self.description)
+        return '{}. {}'.format(self.id, self.name)
 
     def get_absolute_url(self):
         return reverse('menu:charttype_list', args=[self.id, self.slug])
@@ -152,28 +176,137 @@ class Url(ItemBase):
     url = models.CharField(max_length=250)
     icon = models.FileField(upload_to='icons')
 
+MY_CHOICES = (
+    ('a1', 'Option 11'),
+    ('a2', 'Option 22'),
+    ('a3', 'Option 32'),
+)
+
+############################################################################
+##se hoan thanh sau: muc tieu - chon field tự động, thiet kế cho report động
+def get_menu_choices(datatype):
+    choices_tuple = []
+    #if datatype == 'sitestable':
+    ##############test ok###############
+    #choices_tuple = [(field,field) for field in Sites._meta.get_all_field_names()]
+    #choices_tuple2=tuple((choices_tuple, choices_tuple))
+    #print(choices_tuple)
+    ######################################
+    if datatype == 'sitestable':
+        choices_tuple = [(field,field) for field in Sites._meta.get_all_field_names()]
+    elif datatype == 'budgetstable':
+        choices_tuple = [(field,field) for field in Budgets._meta.get_all_field_names()]
+    elif datatype == 'profitstable':
+        choices_tuple = [(field,field) for field in Profits._meta.get_all_field_names()]
+
+    #choices_tuple = (
+    #    ('b1', 'Option b1'),
+    #    ('b2', 'Option b2'),
+    #    ('b3', 'Option b3'),
+    #)
+    print(datatype)
+    print(choices_tuple)
+    #do your stuff
+    return choices_tuple
+
+############################################################################
+##se hoan thanh sau: muc tieu - chon field tự động, thiet kế cho report động
+#class Chart_bk(ItemBase):
+#    file = models.FileField(upload_to='charts')
+#    charttype = models.ForeignKey(ChartType, related_name='rel_charts_charttypes')
+#    datatype = models.ForeignKey(DataType, related_name='rel_charts_datatypes')
+#    content = models.TextField()
+#    choices_f = models.CharField(max_length=50, blank=True)#, choices = MY_CHOICES)
+
+#    #def __init__(self,  *args, **kwargs):
+#    #    super(Chart, self).__init__(*args, **kwargs)
+#    #    #choices_tuple = ['z1','z2','z3','z4','z5']
+#    #    #self._meta.get_field_by_name('choices_f')[0]._choices = MY_CHOICES #lazy(get_menu_choices, list)()#choices_tuple# get_menu_choices()
+#    #    self._meta.get_field_by_name('choices_f')[0]._choices = get_menu_choices(self.datatype.slug)
+#    #    #self.fields['choices_f'] = forms.ChoiceField(choices = MY_CHOICES)
+
+
 class Chart(ItemBase):
     file = models.FileField(upload_to='charts')
     charttype = models.ForeignKey(ChartType, related_name='rel_charts_charttypes')
-    siteid = models.ForeignKey(Sites, related_name='rel_charts_sites')
+    datatype = models.ForeignKey(DataType, related_name='rel_charts_datatypes')
+    content = models.TextField()
 
     def render(self):
         #dang test truyen site vào render-> type content *.html
         #test ok
         print('model: render')
-        if self.siteid_id == '123':
-            print('profits: siteid %s' %{self.siteid_id})
-            sites = Sites.objects.all()
-            tables = Profits.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'sites': sites, 'tables':tables})
-        else:
-            print('budgets: siteid %s' %{self.siteid_id})
-            sites = Sites.objects.all()
-            tables = Budgets.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'sites': sites, 'tables':tables})
 
+        if self.datatype.slug == 'sitestable':
+            print('profits: siteid %s' %{self.datatype.slug})
+            sites = Sites.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'sites': sites})#, 'tables':tables
+        elif self.datatype.slug == 'budgetstable':
+            print('budgets: siteid %s' %{self.datatype.slug})
+            sites = Sites.objects.all()
+            #budgets = Budgets.objects.all()
+            #lay budget của ngày mới nhất
+            budgets = Budgets.objects.raw(
+                '''
+                SELECT budgets.*, maxdatebudgets."SiteID",
+
+                (case when budgets."TaskID"='A' then concat(maxdatebudgets."SiteID",'0A')
+                else concat(maxdatebudgets."SiteID",replace(budgets."TaskID",'.','_'))
+                 end) "TaskKey",
+
+                (CASE WHEN budgets."TaskID"<>'A' THEN
+                    (case  when position('.' in budgets."TaskID")>0 then
+                        concat(maxdatebudgets."SiteID",replace(substring(budgets."TaskID", 1, length(budgets."TaskID")-position('.' in (reverse(budgets."TaskID")))),'.','_'))
+                        else concat(maxdatebudgets."SiteID",'0A')
+                    end
+                    )
+                    when budgets."TaskID"='A' then maxdatebudgets."SiteID"
+                END) "TaskKeyParent"
+                FROM budgets,
+                (select "TaskID",max("Update") as "maxUpdate","SiteName",
+                (select sites."SiteID" from sites where sites."SiteName"=budgets."SiteName") "SiteID"
+                from budgets
+                group by "TaskID","SiteName"
+                order by "TaskID","SiteName") as maxdatebudgets
+                where budgets."TaskID"=maxdatebudgets."TaskID" and budgets."SiteName"=maxdatebudgets."SiteName"
+                and budgets."Update"=maxdatebudgets."maxUpdate"  and char_length(budgets."TaskID") <= 4
+                order by budgets."SiteName", "TaskKey"
+                '''
+            )
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'sites': sites, 'budgets':budgets})
+        elif self.datatype.slug == 'profitstable':
+            print('profits: siteid %s' %{self.datatype.slug})
+            sites = Sites.objects.all()
+            profits = Profits.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'sites': sites, 'profits':profits})
+        elif self.datatype.slug == 'revenuestable':
+            sites = Sites.objects.all()
+            revenues = Revenues.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'sites': sites, 'revenues':revenues})
+        elif self.datatype.slug == 'registeredvehicle':
+            registeredvehicles = RegisteredVehicle.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'registeredvehicles':registeredvehicles})
+        elif self.datatype.slug == 'vehicleinout':
+            vehicleinouts = VehicleInOut.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'vehicleinouts':vehicleinouts})
+        elif self.datatype.slug == 'vehiclesupplier':
+            vehiclesuppliers = VehicleSupplier.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'vehiclesuppliers':vehiclesuppliers})
+        elif self.datatype.slug == 'cardtype':
+            cardtypes = CardType.objects.all()
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'cardtypes':cardtypes})
+        elif self.datatype.slug == 'tasklist':
+            tasklists = Tasklist
+            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
+                                    {'item': self, 'tasklists':tasklists})
 
 class Profit_Table(ItemBase):
     content = models.TextField()

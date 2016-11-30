@@ -14,7 +14,7 @@ from budgets.models import Sites, Profits
 from budgets.models import Tasklist, Revenues
 from employees.forms import MenuHeaderRequestForm
 from menu import forms
-from menu.forms import MenuDetailFormSet
+from menu.forms import MenuDetailFormSet, ItemContentForm
 from menu.models import MenuFunction, MenuHeader, MenuDetail, ItemContent
 
 
@@ -42,6 +42,9 @@ def menudetail_list(request, id, slug):
     return render(request, 'menu/manage/menudetail/list.html',
                   {'menudetail': menudetail})
 
+
+def homepage(request):
+    return render(request, 'menu/menuheader/index.html')
 
 
 ##mixin
@@ -132,6 +135,9 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
     def get_form(self, model, *args, **kwargs):
         #Form = modelform_factory(model, exclude=['owner', 'orderview', 'createddate', 'updateddate'])
         #loai bỏ tuc la k lấy cac column owner, orderview, create...
+        ##field choice for form########
+        #Form = modelform_factory(model, form=ItemContentForm)#, exclude=['orderview', 'createddate', 'updateddate'])
+        ##field choice for model#######
         Form = modelform_factory(model, exclude=['orderview', 'createddate', 'updateddate'])
         return Form(*args, **kwargs)
 

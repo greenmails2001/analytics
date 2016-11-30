@@ -19,7 +19,10 @@ class Sites(models.Model):
     class Meta:
         #managed = True
         db_table = 'sites'
-
+        ordering = ('sitename',)
+        #hien thi tren admin
+        verbose_name = '04. Sites'
+        verbose_name_plural = '04. Sites'
     def __str__(self):
         #return self.name
         return '{}. {}'.format(self.siteid, self.sitename)
@@ -33,7 +36,10 @@ class Tasklist(models.Model):
     class Meta:
         #managed = True
         db_table = 'tasklist'
-
+        ordering = ('taskid',)
+        #hien thi tren admin
+        verbose_name = '05. Task Lists'
+        verbose_name_plural = '05. Task Lists'
 
 class Profits(models.Model):
     #profit_id = models.PositiveIntegerField(db_column='ProfitID', primary_key=True)
@@ -56,7 +62,10 @@ class Profits(models.Model):
         #managed = True
         db_table = 'profits'
         unique_together = (('taskid', 'update', 'sitename'),)
-
+        ordering = ('sitename','update','taskid')
+        #hien thi tren admin
+        verbose_name = '03. Profits'
+        verbose_name_plural = '03. Profits'
 
 class Revenues(models.Model):
     revenueid = models.AutoField(db_column='RevenueID', primary_key=True)
@@ -73,6 +82,10 @@ class Revenues(models.Model):
     class Meta:
         db_table = 'revenues'
         unique_together = (('update', 'sitename'),)
+        ordering = ('sitename','update')
+        #hien thi tren admin
+        verbose_name = '02. Revenues'
+        verbose_name_plural = '02. Revenues'
 
 
 class Budgets(models.Model):
@@ -100,3 +113,7 @@ class Budgets(models.Model):
         #managed = True
         db_table = 'budgets'
         unique_together = [('taskid', 'update', 'sitename'),]
+        ordering = ('sitename','update','taskid')
+        #hien thi tren admin
+        verbose_name = '01. Budgets'
+        verbose_name_plural = '01. Budgets'

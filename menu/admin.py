@@ -1,12 +1,15 @@
 from django.contrib import admin
 
 # Register your models here.
-from menu.models import MenuFunction, MenuDetail, MenuHeader, ChartType, MenuDetailEmployees
+from django.db import models
+from django.forms import Textarea
+
+from menu.models import MenuFunction, MenuDetail, MenuHeader, ChartType, MenuDetailEmployees, DataType
 
 
 @admin.register(MenuFunction)
 class MenuFunctionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug']
+    list_display = ['name', 'slug','orderview']
     prepopulated_fields = {'slug': ('name',)}
 
 
@@ -20,13 +23,38 @@ class MenuHeaderAdmin(admin.ModelAdmin):
     list_filter = ['createddate', 'menufunction']
     search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(
+                           attrs={'rows': 1,
+                                  'cols': 40,
+                                  'style': 'height: 5em;'})},
+    }
     inlines = [MenuDetailInline]
 
 
 @admin.register(ChartType)
 class ChartTypeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug','description']
+    list_display = ['id','name', 'slug', 'description']
     prepopulated_fields = {'slug': ('name',)}
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(
+                           attrs={'rows': 1,
+                                  'cols': 40,
+                                  'style': 'height: 5em;'})},
+    }
+
+
+@admin.register(DataType)
+class DataTypeAdmin(admin.ModelAdmin):
+    list_display = ['id','name', 'slug','image','description']
+    prepopulated_fields = {'slug': ('name',)}
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(
+                           attrs={'rows': 1,
+                                  'cols': 40,
+                                  'style': 'height: 5em;'})},
+    }
+
 
 #Inline phải đặt trước ModelAdmin
 #@admin.register(MenuDetailEmployeesInline)
@@ -40,7 +68,10 @@ class MenuDetailAdmin(admin.ModelAdmin):
     list_filter = ['createddate', 'menuheader']
     search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(
+                           attrs={'rows': 1,
+                                  'cols': 40,
+                                  'style': 'height: 5em;'})},
+    }
     inlines = [MenuDetailEmployeesInline]
-
-
-
