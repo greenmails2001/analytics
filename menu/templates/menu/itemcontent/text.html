@@ -1,13 +1,11 @@
-    <div class="col-sm-6 col-xs-12">
+    <div class="col-sm-{{ item.size }} col-xs-12">
       <div class="panel panel-default text-center">
         <div class="panel-heading">
-          <h1>{{item}}zzzzzzzzzzzzzzz</h1>
+          <h6>{{item}}</h6>
         </div>
         <div class="panel-body">
           <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
-        </div>
-        <div class="panel-footer">
-          <button class="btn btn-lg">Detail</button>
+            <a href="{% url 'weather_chart_view' %}">chart it test</a>
         </div>
       </div>
     </div>

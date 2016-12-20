@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<link href="{% static "css/chart_table.css" %}" rel="stylesheet">
+
+<div class="col-sm-{{ item.size }} col-xs-12">
+
+  <div class="table">
+    <div class="row header green">
+    <!--div class="row header green"-->
+    <!--div class="row header blue"-->
+        <div class="cell">#</div>
+        <div class="cell">vehicle number</div>
+        <div class="cell">card type</div>
+        <div class="cell">vehicle type</div>
+        <div class="cell">station in</div>
+        <div class="cell">station out</div>
+        <div class="cell">check in</div>
+        <div class="cell">check out</div>
+        <div class="cell">status</div>
+        <div class="cell">created date</div>
+        <div class="cell">updated date</div>
+        <div class="cell">payin</div>
+        <div class="cell">charge</div>
+        <div class="cell">amount</div>
+    </div>
+    {% for value in vehicleinouts %}
+        <div class="row">
+            <div class="cell">{{ value.id }}</div>
+            <div class="cell">{{ value.vehiclenumber }}</div>
+            <div class="cell">{{ value.cardtype }}</div>
+            <div class="cell">{{ value.vehicletype }}</div>
+            <div class="cell">{{ value.stationnamein }}</div>
+            <div class="cell">{{ value.stationnameout }}</div>
+            <div class="cell">{{ value.checkin }}</div>
+            <div class="cell">{{ value.checkout }}</div>
+            <div class="cell">
+                {% if value.status == 'A' %}
+                    <span class="label label-success">Active</span>
+                {% elif  value.status == 'B' %}
+                    <span class="label label-important">Banned</span>
+                {% elif  value.status == 'I' %}
+                    <span class="label">Inactive</span>
+                {% elif  value.status == 'P' %}
+                    <span class="label label-warning">Pending</span>
+                {% endif %}
+            </div>
+            <div class="cell">{{ value.createddate }}</div>
+            <div class="cell">{{ value.updateddate }}</div>
+            <div class="cell">{{ value.payin }}</div>
+            <div class="cell">{{ value.charge }}</div>
+            <div class="cell">{{ value.amount }}</div>
+        </div>
+    {% endfor %}
+
+  </div>
+
+</div>

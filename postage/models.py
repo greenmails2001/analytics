@@ -122,9 +122,9 @@ class VehicleInOut(models.Model):
     updateddate = models.DateTimeField(auto_now=True)
     idlink=models.PositiveIntegerField( db_index=True, blank=True, null=True)
     ##tcp chưa có 3column này, bo sung de demo
-    payin = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)#tong so tien nạp vào
-    charge = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)#tong so tien da sudung
-    amount = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)#tong sotien co trong tk
+    payin = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)#tong so tien nạp vào
+    charge = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)#tong so tien da sudung
+    amount = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)#tong sotien co trong tk
 
     class Meta:
         #managed = True

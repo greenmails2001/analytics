@@ -2,70 +2,130 @@
 {% load menuheader %}
 
 {% block title %}
-    MenuDetail {{ menudetail.orderview|add:1 }}: {{ menudetail.name }}
+    {{ menudetail.orderview }}. {{ menudetail.name }}
 {% endblock %}
 
 {% block menu %}
-    <ul class="nav nav-pills nav-stacked nav-menu" >
+    <ul class="nav nav-pills nav-stacked nav-menu" xmlns="http://www.w3.org/1999/html">
     {% with menuheader=menudetail.menuheader %}
-        <h1>{{ menuheader.name }}</h1>
-        <div class="contents">
-            <ul id="modules">
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown"
+               href="#">
+                {{ menuheader.name }} <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
                 {% for m in menuheader.rel_menu_details.all %}
                     <li data-id="{{ m.id }}" {% if m == menudetail %} class="selected"{% endif %}>
                         <a href="{% url "menudetail_itemcontent_list" m.id %}">
                             <span>
-                                MenuDetail <span class="order">{{ m.orderview|add:1 }}</span>
+                                <span class="order">{{ m.orderview }}. {{ m.name }}</span>
                             </span>
-                            <br>
-                            {{ m.name }}
                         </a>
                     </li>
                 {% empty %}
                     <li>No menudetails yet.</li>
                 {% endfor %}
             </ul>
-            <p><a href="{% url "menuheader_menudetail_update" menuheader.id %}">Edit menudetails</a></p>
+        </li>
+        <hr style="align:right;border:1px solid cornflowerblue; transform: rotate(0deg);">
+        <p>Config:</p>
+        <div class="col-sm-12 col-xs-12">
+
+            <a href="{% url "menuheader_menudetail_update" menuheader.id %}"
+               target="_self" id="code" type="submit" class="btn btn-success" style="width:100%">
+                <span class="tooltiptext"> <i class="glyphicon glyphicon-edit"></i> Edit Menu</span>
+            </a>
+
         </div>
+        <br><br>
+        <!--button dòng 2-->
+        <div class="col-sm-12 col-xs-12">
+
+            <a href="{% url "manage_menuheader_list" %}"
+               target="_self" id="code" type="submit" class="btn btn-success" style="width:100%">
+                <span class="tooltiptext"> <i class="glyphicon glyphicon-arrow-left"></i> Management</span>
+            </a>
+
+        </div>
+
+        <br><hr style="align:right;border:1px solid lightgreen; transform: rotate(0deg);">
     {% endwith %}
     </ul>
 {% endblock %}
 {% block content %}
 
         <div class="module">
-        <div class="col-sm-8 col-xs-12">
-            <h2>MenuDetail {{ menudetail.orderview|add:1 }}: {{ menudetail.name }}</h2>
+        <div class="col-sm-9 col-xs-12">
+            <h2>MenuDetail: {{ menudetail.orderview }}. {{ menudetail.name }}</h2>
             <h3>MenuDetail itemcontents:</h3>
             <div id="menudetail-itemcontents">
                 {% for itemcontent in menudetail.rel_itemcontents_menudetails.all %}
                     <div data-id="{{ itemcontent.id }}">
                         {% with item=itemcontent.item %}
                             <p>{{ item }}({{ item|model_name }})</p>
-
-                            <a href="{% url "menudetail_itemcontent_update" menudetail.id item|model_name item.id %}">Edit - {{ item.id }}</a>
+                            <div class="col-sm-2 col-xs-12">
+                            <a href="{% url "menudetail_itemcontent_update" menudetail.id item|model_name item.id %}"
+                               target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                                <i class="glyphicon glyphicon-edit"></i> Edit item
+                            </a>
+                            </div>
+                            <div class="col-sm-2 col-xs-12">
                             <form action="{% url "menudetail_itemcontent_delete" itemcontent.id %}" method="post">
-                                <input type="submit" value="Delete">
+                                <!--input type="submit" value="Delete"-->
+                                <!--input
+                                   target="_blank" id="code" type="submit"
+                                   value="Delete"
+                                    class="btn btn-info" style="width:100%">
+                                </input   nhược điểm: k them icon trước value được-->
+
+                                <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-edit"></i> Delete</button>
                                 {% csrf_token %}
                             </form>
+                            </div>
+                        <br><hr style="align:right;border:1px solid darkgray; transform: rotate(0deg);">
                         {% endwith %}
                     </div>
                 {% empty %}
                     <p>This menudetail has no itemcontents yet.</p>
                 {% endfor %}
             </div>
-            <hr>
+
         </div>
-        <div class="col-sm-4 col-xs-12">
+        <div class="col-sm-3 col-xs-12">
             <h3>Add new itemcontent:</h3>
-            <ul class="itemtypes">
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "text" %}">Text</a></li>
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "image" %}">Image</a></li>
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "video" %}">Video</a></li>
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "file" %}">File</a></li>
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "chart" %}">Chart</a></li>
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "profit_table" %}">Table</a></li>
-                <li><a href="{% url "menudetail_itemcontent_create" menudetail.id "url" %}">Url</a></li>
-            </ul>
+
+            <div class="row">
+                <div class="col-sm-10 col-xs-12">
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "text" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-comment"></i> Text
+                    </a>
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "image" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-picture"></i> Image
+                    </a>
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "video" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-film"></i> Video
+                    </a>
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "file" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-paperclip"></i> File
+                    </a>
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "chart" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-stats"></i> Chart
+                    </a>
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "profit_table" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-stats"></i> Table
+                    </a>
+                    <a href="{% url "menudetail_itemcontent_create" menudetail.id "url" %}"
+                       target="_self" id="code" type="submit" class="btn btn-info" style="width:100%">
+                        <i class="glyphicon glyphicon-link"></i> Url
+                    </a>
+                </div>
+            </div>
         </div>
         </div>
 {% endblock %}

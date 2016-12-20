@@ -1,25 +1,77 @@
 {% extends "base.html" %}
-{% block title %}Menu header{% endblock %}
+
+
+{% block title %}Management Page{% endblock %}
 {% block content %}
-<h1>Menu header</h1>
-    <div class="module">
-        {% for menuheader in object_list %}
-            <div class="menuheader-info">
-                <h3>{{ menuheader.name }}</h3>
-                <p>
-                    <a href="{% url "menuheader_edit" menuheader.id %}">Edit</a>
-                    <a href="{% url "menuheader_delete" menuheader.id %}">Delete</a>
-                    <a href="{% url "menuheader_menudetail_update" menuheader.id %}">Edit menudetails</a>
-                    {% if menuheader.rel_menu_details.count > 0 %}
-                        <a href="{% url "menudetail_itemcontent_list" menuheader.rel_menu_details.first.id %}">Manage itemcontents</a>
-                    {% endif %}
-                </p>
-            </div>
-        {% empty %}
-            <p>You haven't created any menu yet.</p>
-        {% endfor %}
-        <p>
-            <a href="{% url "menuheader_create" %}" class="button">Create new menuheader</a>
-        </p>
-    </div>
-{% endblock %}
+<h1>Management Page</h1>
+        <div class="table">
+            {% regroup object_list by menufunction as menufunction_list %}
+            {% for f in menufunction_list %}
+
+                    <div class="row header other">
+                    <hr style="align:right;border:1px solid darkgray; transform: rotate(0deg);">
+                        <div class="cell"><h4>- {{ f.grouper }}</h4></div>
+                    </div>
+                {#% for menuheader in object_list %#}
+                <div class="row">
+                    {% for menuheader in f.list %}
+                        <div class="cell">
+                            <div class="menuheader-info">
+                                <div class="col-sm-3 col-xs-12">
+                                    <div class="panel-heading">
+                                        <h6>
+                                            {{ menuheader.orderview }}. {{ menuheader.name }}
+                                            (
+                                            <a href="{% url "menuheader_edit" menuheader.id %}">Edit,</a>
+                                            <a href="{% url "menuheader_delete" menuheader.id %}">Delete</a>
+                                            )
+                                        </h6>
+                                    </div>
+                                    <div class="thumbnail">
+                                        {% if menuheader.image %}
+                                            <img src="{{ menuheader.image.url }}">
+                                        {% endif %}
+                                        <div class="col-sm-6 col-xs-12">
+                                            <a href="{% url "menuheader_menudetail_update" menuheader.id %}"
+                                               target="_self"  type="submit" class="btn" style="width:100%">
+                                                <i class="glyphicon glyphicon-edit"></i> Edit details
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12">
+                                            <a href="{% url "menudetail_itemcontent_list" menuheader.rel_menu_details.first.id %}"
+                                               target="_self"  type="submit" class="btn" style="width:100%">
+                                                <i class="glyphicon glyphicon-plus"></i> Contents
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                {% empty %}
+                    <p>You haven't created any menu yet.</p>
+                {% endfor %}
+                </div>
+
+            {% empty %}
+                <p>You haven't created any menu function yet.</p>
+            {% endfor %}
+        </div>
+        {% endblock %}
+        {% block menu %}
+            <!--tao button thuan tuy, k background
+            input type=button
+               onClick="location.href=''"
+               value='Create new menuheader'-->
+<!--tam thoi ẩn, them menuheader = admin, do chua hoàn thiện phần detail khi thêm menuheader
+lỗi ở đây: href="{#% url "menudetail_itemcontent_list" menuheader.rel_menu_details.first.id %#}"
+        <div class="col-sm-12 col-xs-12">
+            <a href="{% url "menuheader_create" %}"
+               target="_self" id="code" type="submit" class="btn btn-success" style="width:100%">
+                <i class="glyphicon glyphicon-create"></i> Create Menuheader
+            </a>
+        </div>
+
+        <br><hr style="align:right;border:1px solid lightgreen; transform: rotate(0deg);">
+-->
+        {% endblock %}

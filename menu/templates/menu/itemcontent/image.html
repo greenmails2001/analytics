@@ -1,8 +1,12 @@
-<div class="col-sm-6 col-xs-12">
+<div class="col-sm-{{ item.size }} col-xs-12">
     <div class="panel-heading">
-          <h1>{{item}}</h1>
+          <h6>{{item}}</h6>
     </div>
     <div class="thumbnail">
-        <img src="{{ item.file.url }}">
+        <img src="{{ item.file.url }}" onclick="window.open('{{ item.file.url }}')">
+        <a href="'+{{ protected }}+'">File</a>
+
+        <img src="{{ item.photo.url }}" onclick="window.open('{{ item.photo.url }}')">
+
     </div>
 </div>

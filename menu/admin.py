@@ -7,10 +7,14 @@ from django.forms import Textarea
 from menu.models import MenuFunction, MenuDetail, MenuHeader, ChartType, MenuDetailEmployees, DataType
 
 
+class MenuHeaderInline(admin.TabularInline):
+    model = MenuHeader
+
 @admin.register(MenuFunction)
 class MenuFunctionAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug','orderview']
     prepopulated_fields = {'slug': ('name',)}
+    inlines = [MenuHeaderInline]
 
 
 class MenuDetailInline(admin.TabularInline):

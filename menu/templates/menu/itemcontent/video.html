@@ -1,9 +1,17 @@
-<div class="col-sm-6 col-xs-12">
+<div class="col-sm-{{ item.size }} col-xs-12">
     <div class="panel-heading">
-          <h1>{{item}}</h1>
+          <h6>{{item}}<a href="{{ item.url }}"> (Open Link)</a></h6>
+
     </div>
-        src="{% load embed_video_tags %}
-        {% video item.url 'small' %}">
+        {% load embed_video_tags %}
+        {% if item.size == "10" or item.size == "11" or item.size == "12" %}
+            {% video item.url '100% x 600' %}
+        {% elif item.size == "7" or item.size == "8" or item.size == "9" %}
+            {% video item.url '100% x 500' %}
+        {% else %}
+            {% video item.url '100% x 300' %}
+        {%endif%}
+
 </div>
 
 

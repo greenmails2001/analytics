@@ -17,12 +17,8 @@
     <div class="module">
         <h2>Menuheader info</h2>
         <form action="" method="post" enctype="multipart/form-data">
-            <p>Owner: {{ form.owner }}</p>
-            <p>Title: {{ form.title }}</p>
-            <p>File: {{ form.file }}</p>
-            <p>Type: {{ form.charttype }}</p>
-            <p>DataType: {{ form.datatype }}</p>
-            <p>Content: {{ form.content }}</p>
+
+            <p>{{ form.as_p }}</p>
 
             {% csrf_token %}
             <p><input type="submit" value="Save itemcontent"></p>

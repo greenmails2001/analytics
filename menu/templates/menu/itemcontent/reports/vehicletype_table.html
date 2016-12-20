@@ -1,0 +1,30 @@
+{% load staticfiles %}
+<link href="{% static "css/chart_table.css" %}" rel="stylesheet">
+
+<div class="col-sm-{{ item.size }} col-xs-12">
+
+  <div class="table">
+    <div class="row header green">
+    <!--div class="row header green"-->
+    <!--div class="row header blue"-->
+        <div class="cell">#</div>
+        <div class="cell">name</div>
+        <div class="cell">image</div>
+        <div class="cell">description</div>
+        <div class="cell">orderview</div>
+
+    </div>
+    {% for value in vehicletypes %}
+        <div class="row">
+            <div class="cell">{{ value.id }}</div>
+            <div class="cell">{{ value.name }}</div>
+            <div class="cell"></div>
+            <div class="cell">{{ value.description }}</div>
+            <div class="cell">{{ value.orderview }}</div>
+
+        </div>
+    {% endfor %}
+
+  </div>
+
+</div>

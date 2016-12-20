@@ -1,0 +1,80 @@
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<div class="col-sm-{{ item.size }} col-xs-12">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+            <h6>{{item}}</h6>
+        </div>
+        <div class="panel-body">
+            Foo:
+            <select id="filter_{{ item.id }}">
+                <option value="">---</option>
+                {% for value in sites %}
+                  <option value="{{ value.siteid }}">{{ value.sitename }}</option>
+                {% endfor %}
+            </select>
+            <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
+            <div class="thumbnail">
+                <img id="chart_{{ item.id }}" src="{% url "plot_revenues_line" 123 %}" alt="your imageaaaa" />
+            </div>
+            {% if item.datatype.slug == 'sitestable' %}
+                  Site
+                  {% for b in sites %}
+                      {{ b.siteid }}-{{ b.sitename }}-{{ b.manage }}-{{ b.phone }}-{{ b.area }}
+                  {% endfor %}
+              {% elif item.datatype.slug == 'budgetstable' %}
+                  Budget
+                  {% for b in tables %}
+                      {{ b.budgetid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.update }}-{{ b.qty }}
+                  {% endfor %}
+                {% elif item.datatype.slug == 'profitstable' %}
+                    Profit
+                  {% for b in tables %}
+                      {{ b.profitid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.revenue }}-{{ b.profit }}
+                  {% endfor %}
+              {% endif %}
+        </div>
+        <div class="panel-footer">
+          <button class="btn btn-info">
+              {% if item.datatype.slug == 'sitestable' %}
+                  Sites
+              {% elif item.datatype.slug == 'budgetstable' %}
+                  Budgets
+                {% elif item.datatype.slug == 'profitstable' %}
+                  Profits
+              {% endif %}
+          </button>
+        </div>
+      </div>
+
+</div>
+
+<script type="text/javascript">
+    ///////danh cho filter angular////////////////////////////////////////
+    angular.module('myApp', []).controller('namesCtrl', function($scope) {
+        var array_sites=[{% for site in sites %}
+                    {% if not forloop.first %},{% endif %}
+                        {id:'{{site.siteid}}', name:'{{site.sitename}}'}
+                {% endfor %}];
+        $scope.names = array_sites;
+    });///////////////////////////////////////////////////////////////////
+
+    //filter javascript;
+    var varurl='{% url "plot_revenues_line" 123 %}';
+    urlMap = {
+        {% for value in sites %}
+            '{{ value.siteid }}' : varurl.replace(/123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
+        {% endfor %}
+    };
+    $(function() {
+        function LoadImg(item_id)
+        {
+        $("#filter_"+item_id).change(function() {
+            alert($(this).val()+'-'+ item_id);
+            $("#chart_"+item_id).attr('src', urlMap[$(this).val()]);
+            //location.href = urlMap[$(this).val()];
+        });
+        }
+        LoadImg('{{ item.id }}');
+    });
+
+</script>

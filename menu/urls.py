@@ -1,6 +1,8 @@
-from django.conf.urls import url
+from django.conf.urls import url, patterns
 
+from analytics import settings
 from menu import views
+from menu import plot
 
 urlpatterns = [
     #tạm thoi rào lại, do cách tao url này copy từ ordershops, them vao se bi loi
@@ -44,5 +46,16 @@ urlpatterns = [
     url(r'^(?P<slug>[\w-]+)/$',
         views.MenuHeaderDetailView.as_view(), name='menuheader_detail'),
     url(r'^results/(?P<site_id>\d+)result.png$', views.plotResults,name='plotResults'),
+    #url(r'^results/plot_profits_barline_(?P<site_id>\d+).png$', plot.plot_profits_barline,name='plot_profits_barline'),
+    url(r'^results/plot_profits_barline_(?P<site_id>\d+).png$', plot.PlotView.plot_profits_barline,name='plot_profits_barline'),
+    url(r'^results/plot_profits_line_(?P<site_id>\d+).png$', plot.PlotView.plot_profits_line,name='plot_profits_line'),
+    url(r'^results/plot_revenues_line_(?P<site_id>\d+).png$', plot.PlotView.plot_revenues_line,name='plot_revenues_line'),
+    #test django-chartit
+    url(r'^results', plot.weather_chart_view.as_view(), name='weather_chart_view'),
+    url(r'^budgets', plot.budget_chart_view.as_view(), name='budget_chart_view'),
+    url(r'^profits/(?P<site_id>\d+)/$', plot.profit_chart_view.as_view(), name='profit_chart_view'),
     url(r'^results/$', views.search, name='results'),
+    #url(r'^(?P<filename>[^/]+)/$', views.file_serve, name='upload_file_serve'), #20161208 test fail
 ]
+urlpatterns += patterns('menu.views',
+                        url(r'^{0}(?P<path>.*)$'.format(settings.PRIVATE_MEDIA_URL.lstrip('/')), 'serve_private_file',), )

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'account',
     'menu',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'employees',
+    'employee_groups',
     'budgets',
     'postage',
     'embed_video',
+    'chartit',
 ]
 
 #MIDDLEWARE = [
@@ -139,4 +142,36 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-LOGIN_REDIRECT_URL = reverse_lazy('employee_menuheader_list')
+#LOGIN_REDIRECT_URL = reverse_lazy('employee_menuheader_list')
+
+LOGIN_URL = reverse_lazy('login')
+LOGOUT_URL = reverse_lazy('logout')
+LOGIN_REDIRECT_URL = '/menuheader/menufunction/home/'
+
+###test permission file in media dir
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'private-media/')#'/home/username/private-media' # for example
+PRIVATE_MEDIA_URL = '/private/' # for example
+
+'''
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'activemails2001@gmail.com'
+EMAIL_HOST_PASSWORD = 'Dba0111221'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+'''
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+EMAIL_HOST = 'mail.hbcr.vn'
+EMAIL_HOST_USER = 'lan.phan@hbcr.vn'
+EMAIL_HOST_PASSWORD = '0111221'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

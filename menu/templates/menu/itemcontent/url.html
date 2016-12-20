@@ -1,13 +1,12 @@
-    <div class="col-sm-6 col-xs-12">
+    <div class="col-sm-{{ item.size }} col-xs-12">
       <div class="panel panel-default text-center">
-
         <div class="panel-footer">
-            <div class="col-sm-2 col-xs-12">
-                <div class="thumbnail">
-                    <img src="{{ item.icon.url }}">
+            <!--div class="col-sm-2 col-xs-12"-->
+                <!--div class="thumbnail"-->
+                <div>
+                    <img src="{{ item.icon.url }}" onclick="window.open('{{ item.url }}')">
                 </div>
-            </div>
-          <button class="btn btn-lg" onclick="window.open('{{ item.url }}')">{{ item.title }}</button>
+            <button class="btn btn-info" onclick="window.open('{{ item.url }}')">{{ item.title }}</button>
 
         </div>
       </div>

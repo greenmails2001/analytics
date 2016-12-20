@@ -7,7 +7,6 @@
     {% endif %}
 {% endblock %}
 {% block header %}
-
     {% for f in menufunctions %}
         <li {% if menufunction == f %}class="active"{% endif %}>
             <a href="{% url "mainmenu_list_menufunction" f.slug %}">
@@ -33,12 +32,15 @@
                         {{ menuheader.name }} <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        {% for m in menuheader.rel_menu_details.all %}
-                            <li data-id="{{ m.id }}" {% if m == menudetail %} class="selected"{% endif %}>
-                                <a href="{% url "mainmenu_list_menufunction_header_detail" menufunction.slug menuheader.id m.id %}">
-                                    <span class="order">{{ m.orderview }} - {{ m.name }}</span>
-                                </a>
-                            </li>
+                        {#% for m in menuheader.rel_menu_details.all %#}
+                        {% for m in menudetails %}
+                            {% if menuheader == m.menuheader %}
+                                <li data-id="{{ m.id }}" {% if m == menudetail %} class="selected"{% endif %}>
+                                    <a href="{% url "mainmenu_list_menufunction_header_detail" menufunction.slug menuheader.id m.id %}">
+                                        <span class="order">{{ m.orderview }} - {{ m.name }}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% empty %}
                             <li>No menudetails or no permission yet!</li>
                         {% endfor %}
@@ -51,6 +53,7 @@
             <p>You haven't created any menu or no permission  yet.</p>
         {% endfor %}
     </ul>
+    <br><hr style="align:right;border:1px solid lightgreen; transform: rotate(0deg);">
 {% endblock %}
 <!--/div-->
 <!--div class="col-md-4"-->

@@ -1,6 +1,9 @@
-from django.contrib.auth.models import User
+import os
+
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
 from django.db import models
 # Create your models here.
@@ -9,9 +12,11 @@ from django.forms import Textarea
 from django.template.loader import render_to_string
 from django.utils.functional import lazy
 
+from analytics import settings
 from budgets.models import Sites, Profits, Budgets, Revenues, Tasklist
+from menu import plot
 from menu.fields import OrderField
-from postage.models import RegisteredVehicle, VehicleInOut, VehicleSupplier, CardType
+from postage.models import RegisteredVehicle, VehicleInOut, VehicleSupplier, CardType, VehicleType
 
 
 class MenuFunction(models.Model):
@@ -130,6 +135,12 @@ class MenuDetailEmployees(models.Model):
     updateddate = models.DateTimeField(auto_now=True)
 
 
+class MonthlyWeatherByCity(models.Model):
+    month = models.IntegerField()
+    boston_temp = models.DecimalField(max_digits=5, decimal_places=1)
+    houston_temp = models.DecimalField(max_digits=5, decimal_places=1)
+
+
 class ItemContent(models.Model):
     menudetail = models.ForeignKey(MenuDetail, related_name='rel_itemcontents_menudetails')
     itemtype = models.ForeignKey(ContentType, limit_choices_to={'model__in':('text','video','image','file','chart','profit_table','url')})
@@ -140,6 +151,23 @@ class ItemContent(models.Model):
     class Meta:
         ordering = ['orderview']
 
+size_list = (
+    ('2', 'Size 2/12'),
+    ('3', 'Size 3/12'),
+    ('4', 'Size 4/12'),
+    ('5', 'Size 5/12'),
+    ('6', 'Size 6/12'),
+    ('7', 'Size 7/12'),
+    ('8', 'Size 8/12'),
+    ('9', 'Size 9/12'),
+    ('10', 'Size 10/12'),
+    ('11', 'Size 11/12'),
+    ('12', 'Size 12/12'),
+)
+
+##test permission file in media dir
+private_media = FileSystemStorage(location=settings.PRIVATE_MEDIA_ROOT,
+                                  base_url=settings.PRIVATE_MEDIA_URL,)
 
 ##########
 class ItemBase(models.Model):
@@ -147,6 +175,9 @@ class ItemBase(models.Model):
     title = models.CharField(max_length=250)
     createddate = models.DateTimeField(auto_now_add=True)
     updateddate = models.DateTimeField(auto_now=True)
+    haveTitle = models.BooleanField(default=True)
+    haveLink = models.BooleanField(default=False)
+    size = models.CharField(max_length=2,blank=True, choices = size_list,default='6')
 
     class Meta:
         abstract = True
@@ -167,7 +198,19 @@ class File(ItemBase):
     file = models.FileField(upload_to='files')
 
 class Image(ItemBase):
-    file = models.FileField(upload_to='images')
+    file = models.FileField(upload_to='protected') #'images')
+    #protected_url = models.URLField(blank=True)
+    photo = models.ImageField(storage=private_media)
+    '''
+    def render(self):
+        #dang test truyen site vào render-> type content *.html
+        #test ok
+        #psite = Sites.objects.all()
+        #protected = reverse('upload_file_serve', args=[os.path.basename(self.file.file.name)])
+        print('render')
+        #print(protected)
+        return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name), {'item': self}) #,'protected':protected})
+    '''
 
 class Video(ItemBase):
     url = models.URLField()
@@ -235,13 +278,16 @@ class Chart(ItemBase):
     def render(self):
         #dang test truyen site vào render-> type content *.html
         #test ok
-        print('model: render')
+        print('model: tao renderlink')
+        if self._meta.model_name=='chart':
+            renderlink = 'menu/itemcontent/reports/{}_{}.html'.format(self.datatype.slug, self.charttype.slug)
+        else:
+            renderlink = 'menu/itemcontent/{}.html'.format(self._meta.model_name)
 
         if self.datatype.slug == 'sitestable':
             print('profits: siteid %s' %{self.datatype.slug})
             sites = Sites.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'sites': sites})#, 'tables':tables
+            return render_to_string(renderlink, {'item': self, 'sites': sites})#, 'tables':tables
         elif self.datatype.slug == 'budgetstable':
             print('budgets: siteid %s' %{self.datatype.slug})
             sites = Sites.objects.all()
@@ -274,39 +320,39 @@ class Chart(ItemBase):
                 order by budgets."SiteName", "TaskKey"
                 '''
             )
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'sites': sites, 'budgets':budgets})
+            return render_to_string(renderlink, {'item': self, 'sites': sites, 'budgets':budgets})
         elif self.datatype.slug == 'profitstable':
             print('profits: siteid %s' %{self.datatype.slug})
             sites = Sites.objects.all()
             profits = Profits.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'sites': sites, 'profits':profits})
+            return render_to_string(renderlink, {'item': self, 'sites': sites, 'profits':profits})
         elif self.datatype.slug == 'revenuestable':
             sites = Sites.objects.all()
             revenues = Revenues.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'sites': sites, 'revenues':revenues})
+            return render_to_string(renderlink, {'item': self, 'sites': sites, 'revenues':revenues})
         elif self.datatype.slug == 'registeredvehicle':
             registeredvehicles = RegisteredVehicle.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'registeredvehicles':registeredvehicles})
+            return render_to_string(renderlink, {'item': self, 'registeredvehicles':registeredvehicles})
         elif self.datatype.slug == 'vehicleinout':
             vehicleinouts = VehicleInOut.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'vehicleinouts':vehicleinouts})
+            return render_to_string(renderlink, {'item': self, 'vehicleinouts':vehicleinouts})
         elif self.datatype.slug == 'vehiclesupplier':
             vehiclesuppliers = VehicleSupplier.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'vehiclesuppliers':vehiclesuppliers})
+            return render_to_string(renderlink, {'item': self, 'vehiclesuppliers':vehiclesuppliers})
+        elif self.datatype.slug == 'vehicletype':
+            vehicletypes = VehicleType.objects.all()
+            return render_to_string(renderlink, {'item': self, 'vehicletypes':vehicletypes})
         elif self.datatype.slug == 'cardtype':
             cardtypes = CardType.objects.all()
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'cardtypes':cardtypes})
+            return render_to_string(renderlink, {'item': self, 'cardtypes':cardtypes})
         elif self.datatype.slug == 'tasklist':
             tasklists = Tasklist
-            return render_to_string('menu/itemcontent/{}.html'.format(self._meta.model_name),
-                                    {'item': self, 'tasklists':tasklists})
+            return render_to_string(renderlink, {'item': self, 'tasklists':tasklists})
+        elif self.datatype.slug == 'chartit':
+            cht = plot.get_chartit(MonthlyWeatherByCity)
+            #Step 3: Send the chart object to the template.
+            return render_to_string(renderlink, {'item': self, 'weatherchart': cht})
+
 
 class Profit_Table(ItemBase):
     content = models.TextField()

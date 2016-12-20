@@ -24,10 +24,12 @@ from menu.views import MenuHeaderListView, MainMenuListView, homepage
 
 urlpatterns = [
 
-    url(r'^accounts/login/$', auth_views.login, name='login'),
-    url(r'^accounts/logout/$', auth_views.logout, name='logout'),
-    url(r'^accounts/profile/$', auth_views.login, name='user_profile'),
+    #url(r'^accounts/login/$', auth_views.login, name='login'),
+    #url(r'^accounts/logout/$', auth_views.logout, name='logout'),
+    #url(r'^accounts/profile/$', auth_views.login, name='user_profile'),
+    url(r'^account/', include('account.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
     url(r'^', include('menu.urls', namespace='menu')),
     url(r'^menuheader/', include('menu.urls')),
     #url(r'^$', MenuHeaderListView.as_view(), name='menuheader_list'),

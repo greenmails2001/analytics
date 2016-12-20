@@ -12,30 +12,14 @@ $(document).ready(function(){
   });
 });
 </script>
-<script type="text/javascript">
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-36251023-1']);
-  _gaq.push(['_setDomainName', 'jqueryscript.net']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-
-<div class="col-sm-12 col-xs-12">
-    <h1>jQuery aCollapTable Plugin Demos</h1>
+<div class="col-sm-{{ item.size }} col-xs-12">
     <div class="well">
         <a href="javascript:void(0);" class="btn btn-primary act-button-expand">+ Expand</a>
         <a href="javascript:void(0);" class="btn btn-primary act-button-collapse">- Collapse</a>
         <a href="javascript:void(0);" class="btn btn-primary act-button-expand-all ">+ Expand All</a>
         <a href="javascript:void(0);" class="btn btn-primary act-button-collapse-all">- Collapse All</a>
     </div>
-
     <table class="collaptable table table-striped">
       <tr>
         <th>#</th>
@@ -58,7 +42,7 @@ $(document).ready(function(){
                 <td>{{ value.startdate }}</td>
                 <td>{{ value.enddate }}</td>
             </tr>
-                        {% for b in budgets %}
+            {% for b in budgets %}
                 {% if b.SiteID == value.siteid %}
                     <tr data-id="{{ b.TaskKey }}" data-parent="{{ b.TaskKeyParent }}"
                         class="{% if b.taskid == 'A' %} aaa {% else %} child {% endif %}">

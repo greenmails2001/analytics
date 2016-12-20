@@ -1,0 +1,55 @@
+{% load staticfiles %}
+<link href="{% static "css/chart_table.css" %}" rel="stylesheet">
+
+<div class="col-sm-{{ item.size }} col-xs-12">
+
+  <div class="table">
+    <div class="row header">
+    <!--div class="row header green"-->
+    <!--div class="row header blue"-->
+        <div class="cell">#</div>
+        <div class="cell">cardnumber</div>
+        <div class="cell">cardtype</div>
+        <div class="cell">vehicletype</div>
+        <div class="cell">vehicleowner</div>
+        <div class="cell">vehicleuser</div>
+        <div class="cell">vehiclesupplier</div>
+        <div class="cell">vehiclenumber</div>
+        <div class="cell">status</div>
+        <div class="cell">registerdate</div>
+        <div class="cell">enddate</div>
+        <div class="cell">startdate</div>
+        <div class="cell">infor</div>
+
+    </div>
+    {% for value in registeredvehicles %}
+        <div class="row">
+            <div class="cell">{{ value.id }}</div>
+            <div class="cell">{{ value.cardnumber }}</div>
+            <div class="cell">{{ value.cardtype }}</div>
+            <div class="cell">{{ value.vehicletype }}</div>
+            <div class="cell">{{ value.vehicleowner }}</div>
+            <div class="cell">{{ value.vehicleuser }}</div>
+            <div class="cell">{{ value.vehiclesupplier }}</div>
+            <div class="cell">{{ value.vehiclenumber }}</div>
+            <div class="cell">
+                {% if value.status == 'A' %}
+                    <span class="label label-success">Active</span>
+                {% elif  value.status == 'B' %}
+                    <span class="label label-important">Banned</span>
+                {% elif  value.status == 'I' %}
+                    <span class="label">Inactive</span>
+                {% elif  value.status == 'P' %}
+                    <span class="label label-warning">Pending</span>
+                {% endif %}
+            </div>
+            <div class="cell">{{ value.registerdate }}</div>
+            <div class="cell">{{ value.enddate }}</div>
+            <div class="cell">{{ value.startdate }}</div>
+            <div class="cell">{{ value.infor }}</div>
+        </div>
+    {% endfor %}
+
+  </div>
+
+</div>

@@ -38,16 +38,18 @@
                     <!--ul class="nav navbar-nav navbar-left"-->
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav navbar-left">
-                            <li><a href="/">Introduce</a></li>
+                            <li><a href="/">Welcome</a></li>
                             <li class="active">
                                 {% block header %}
-                                    <a href="/menuheader/menufunction/home/">Home</a>
+                                    <a href="/menuheader/menufunction/home/">
+                                        <i class="glyphicon glyphicon-home"></i>Home
+                                    </a>
                                 {% endblock %}
                             </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             {% if request.user.is_authenticated %}
-                                <li><a href="{% url "user_profile" %}">{{ request.user }}</a></li>
+                                <li><a href="{% url "edit" %}"><i class="glyphicon glyphicon-user"></i>{{ request.user }}</a></li>
                                 <li><a href="{% url "logout" %}">Logout</a></li>
                             {% else %}
                                 <li><a href="{% url "login" %}">Login</a></li>
@@ -59,19 +61,52 @@
             </nav>
 
     </div>
+
     <div class="col-md-2">
         <!--div id="menu"-->
-            <li> </li><br>
+            <br><br><br>
             {% block menu %}
             {% endblock %}
+            <div class="col-sm-12 col-xs-12">
+                <a href="javascript:history.back()"
+                   target="_self" id="code" type="submit" class="btn btn-success" style="width:100%">
+                    <i class="glyphicon glyphicon-arrow-left"></i> Back
+                </a>
+            </div>
+            {#% for i in '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789'|make_list %#}
+                <!--br-->
+            {#% endfor %#}
+        <!--hr  style="align:right;border:1px solid red; transform: rotate(90deg);"-->
         <!--/div-->
     </div>
+
+    <!--div class="vertical_line"></div-->
+    <!--tao border div class="col-md-10" style="border-style: inset ;border-color: green;"
+    http://www.w3schools.com/css/css_border.asp
+    -->
     <div class="col-md-10">
+
         <div id="content">
-            <li> </li><br>
+            <br><br>
             {% block content %}
             {% endblock %}
+
+            {% block message %}
+                {% if messages %}
+                    <ul class="messages">
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                        <a href="" class="close">✖</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endblock %}
+
         </div>
+
     </div>
+
 </body>
 </html>
