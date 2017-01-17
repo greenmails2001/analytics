@@ -53,7 +53,7 @@ urlpatterns = [
     #test django-chartit
     url(r'^results', plot.weather_chart_view.as_view(), name='weather_chart_view'),
     url(r'^budgets', plot.budget_chart_view.as_view(), name='budget_chart_view'),
-    url(r'^profits/(?P<site_id>\d+)/$', plot.profit_chart_view.as_view(), name='profit_chart_view'),
+    url(r'^profits/(?P<site_id>[\w-]+)/$', plot.profit_chart_view.as_view(), name='profit_chart_view'),
     url(r'^results/$', views.search, name='results'),
     #url(r'^(?P<filename>[^/]+)/$', views.file_serve, name='upload_file_serve'), #20161208 test fail
 ]

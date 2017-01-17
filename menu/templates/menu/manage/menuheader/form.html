@@ -17,9 +17,18 @@
     <div class="module">
         <h2>Menuheader info</h2>
         <form action="." method="post">
-            {{ form.as_p }}
             {% csrf_token %}
-            <p><input type="submit" value="Save menuheader"></p>
+            <div class="col-sm-5 col-xs-12">
+                <table class="collaptable table table-striped">
+                    <tr><th>Name</th><th>{{ form.name }}</th><th>{{ form.name.errors }}</th></tr>
+                    <tr><th>Description</th><th>{{ form.description }}</th><th>{{ form.description.errors }}</th></tr>
+                    <tr><th>Slug</th><th>{{ form.slug }}</th><th>{{ form.slug.errors }}</th></tr>
+                    <tr><th>Orderview</th><th>{{ form.orderview }}</th><th>{{ form.orderview.errors }}</th></tr>
+                    <tr><th>Menufunction</th><th>{{ form.menufunction }}</th><th>{{ form.menufunction.errors }}</th></tr>
+                </table>
+                <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-edit"></i>Save</button>
+            </div>
+
         </form>
     </div>
 {% endblock %}

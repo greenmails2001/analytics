@@ -16,12 +16,110 @@
     </h1>
     <div class="module">
         <h2>Menuheader info</h2>
-        <form action="" method="post" enctype="multipart/form-data">
-
-            <p>{{ form.as_p }}</p>
+        <form action="" method="post">
 
             {% csrf_token %}
-            <p><input type="submit" value="Save itemcontent"></p>
+
+            <div class="col-sm-4 col-xs-12">
+                <table class="collaptable table table-striped">
+                    <tr><th>Owner</th><th>{{ form.owner }}</th><th>{{ form.owner.errors }}</th></tr>
+                    <tr><th>title</th><th>{{ form.title }}</th><th>{{ form.title.errors }}</th></tr>
+                    <tr><th>haveTitle</th><th>{{ form.haveTitle }}</th><th>{{ form.haveTitle.errors }}</th></tr>
+                    <tr><th>haveLink</th><th>{{ form.haveLink }}</th><th>{{ form.haveLink.errors }}</th></tr>
+                    <tr><th>size</th><th>{{ form.size }}</th><th>{{ form.size.errors }}</th></tr>
+                    <tr><th>file</th><th id="file">{{ form.file }}</th><th>{{ form.file.errors }}</th></tr>
+                    <tr><th>content</th><th>{{ form.content }}</th><th>{{ form.content.errors }}</th></tr>
+                    <tr><th>viewreportby</th><th>{{ form.viewreportby }}</th><th>{{ form.viewreportby.errors }}</th></tr>
+
+                    <tr><th>reportlist</th><th>{{ form.reportlist }}</th><th>{{ form.reportlist.errors }}</th></tr>
+
+
+                </table>
+            </div>
+            {% if model_name == 'chart' %}
+                <div class="col-sm-5 col-xs-12">
+                    <table class="collaptable table table-striped">
+                        <tr><th>hierarchy</th><th>{{ form.hierarchy }}</th><th>{{ form.hierarchy.errors }}</th></tr>
+
+                        <tr><th>charttype</th><th>{{ form.charttype }}</th><th>{{ form.charttype.errors }}</th></tr>
+                        <a hidden>{{ form.datatype }}</a>
+                        <tr><th>DataType:</th>
+                            <th>
+                                <select name="select1" id="select1">
+                                    {% for dt in datatypes %}
+                                        <option value="{{dt.id}}">{{dt.id}}-{{dt.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th><th>{{ form.datatype.errors }}</th></th>
+                        </tr>
+
+                        <tr><th>Axis x1:</th>
+                            <th>
+                                <select name="axis_x1" id="axis_x1"><!--list box-->
+                                <!--select name="select2" id="select2" class = "col-md-6" size = 15 --><!--combo box-->
+                                    {% for dt in datatypes %}
+                                        {% for cl in dt.rel_columnlists_datatypes.all%}
+                                            <option value="{{cl.datatype_id}}">
+                                            {{cl.id}} - {{cl.name}}
+                                        </option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th><th>{{ form.axis_x1.errors }}</th></th>
+                        </tr>
+                        <tr><th>sqlstring</th><th>{{ form.sqlstring }}</th><th>{{ form.sqlstring.errors }}</th></tr>
+                        <tr><th>sqlextra</th><th>{{ form.sqlextra }}</th><th>{{ form.sqlextra.errors }}</th></tr>
+                        <tr><th>sqlfilter</th><th>{{ form.sqlfilter }}</th><th>{{ form.sqlfilter.errors }}</th></tr>
+
+                    </table>
+                </div>
+                <div class="col-sm-3 col-xs-12">
+                    <table class="collaptable table table-striped">
+
+                        <tr><th>axis_x1</th><th>{{ form.axis_x1 }}</th></tr>
+                        <tr><th>axis_x2</th><th>{{ form.axis_x2 }}</th></tr>
+                        <tr><th>axis_x3</th><th>{{ form.axis_x3 }}</th></tr>
+                        <tr><th>axis_x4</th><th>{{ form.axis_x4 }}</th></tr>
+                        <tr><th>axis_x5</th><th>{{ form.axis_x5 }}</th></tr>
+                        <tr><th>axis_y1</th><th>{{ form.axis_y1 }}</th></tr>
+                        <tr><th>axis_y2</th><th>{{ form.axis_y2 }}</th></tr>
+                        <tr><th>axis_y3</th><th>{{ form.axis_y3 }}</th></tr>
+                        <tr><th>axis_y4</th><th>{{ form.axis_y4 }}</th></tr>
+                        <tr><th>axis_y5</th><th>{{ form.axis_y5 }}</th></tr>
+                    </table>
+
+                </div>
+            {% endif %}
+
+            <!--p>{$ form.as_p $}</--p-->
+
+            <div class="col-sm-3 col-xs-12">
+                    <button class="btn btn-info" type="submit"><i class="glyphicon glyphicon-edit"></i>Save</button>
+            </div>
         </form>
+
+          ﻿
     </div>
+    <script type="text/javascript">
+        $(window).load(function(){
+            var $axis_x1 = $('#axis_x1');
+            $("#select1").change(function() {
+
+                var id = $(this).val();
+                alert(id);
+                if ($axis_x1.data('options') == undefined) {
+                    $axis_x1.data('options', $axis_x1.find('option').clone());
+                }
+                var options = $axis_x1.data('options').filter('[value=' + id + ']');
+                $axis_x1.html(options);
+            });
+
+        });
+</script>
 {% endblock %}
+
+
+
+

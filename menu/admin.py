@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 
-from menu.models import MenuFunction, MenuDetail, MenuHeader, ChartType, MenuDetailEmployees, DataType
+from menu.models import MenuFunction, MenuDetail, MenuHeader, MenuDetailEmployees
 
 
 class MenuHeaderInline(admin.TabularInline):
@@ -34,30 +34,6 @@ class MenuHeaderAdmin(admin.ModelAdmin):
                                   'style': 'height: 5em;'})},
     }
     inlines = [MenuDetailInline]
-
-
-@admin.register(ChartType)
-class ChartTypeAdmin(admin.ModelAdmin):
-    list_display = ['id','name', 'slug', 'description']
-    prepopulated_fields = {'slug': ('name',)}
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(
-                           attrs={'rows': 1,
-                                  'cols': 40,
-                                  'style': 'height: 5em;'})},
-    }
-
-
-@admin.register(DataType)
-class DataTypeAdmin(admin.ModelAdmin):
-    list_display = ['id','name', 'slug','image','description']
-    prepopulated_fields = {'slug': ('name',)}
-    formfield_overrides = {
-        models.TextField: {'widget': Textarea(
-                           attrs={'rows': 1,
-                                  'cols': 40,
-                                  'style': 'height: 5em;'})},
-    }
 
 
 #Inline phải đặt trước ModelAdmin

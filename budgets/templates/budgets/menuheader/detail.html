@@ -92,7 +92,7 @@
                                     <div class="panel-body">
                                       <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
                                         {% for profit in profits %}
-                                            <p>{{ profit.taskid }} - {{ profit.sitename }} - {{ profit.profit }}- {{ profit.price }}</p>
+                                            <p>{{ profit.taskid }} - {{ profit.siteid }} - {{ profit.profit }}- {{ profit.price }}</p>
                                         {% endfor %}
                                     </div>
                                     <div class="panel-footer">
@@ -109,7 +109,7 @@
                                     <div class="panel-body">
                                         <p><strong>{{ item.content|linebreaks|safe }}</strong></p>
                                         {% for revenue in revenues %}
-                                            <p>{{ revenue.area }} - {{ revenue.sitename }} - {{ revenue.revenue }}- {{ revenue.duration }}</p>
+                                            <p>{{ revenue.area }} - {{ revenue.siteid }} - {{ revenue.revenue }}- {{ revenue.duration }}</p>
                                         {% endfor %}
                                     </div>
                                     <div class="panel-footer">

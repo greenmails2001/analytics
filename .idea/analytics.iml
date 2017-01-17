@@ -19,7 +19,7 @@
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/../analytics\templates" />
+        <option value="$MODULE_DIR$/menu/templates" />
       </list>
     </option>
   </component>

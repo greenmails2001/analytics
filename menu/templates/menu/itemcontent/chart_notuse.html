@@ -24,12 +24,12 @@
               {% elif item.datatype.slug == 'budgetstable' %}
                   Budget
                   {% for b in tables %}
-                      {{ b.budgetid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.update }}-{{ b.qty }}
+                      {{ b.budgetid }}-{{ b.siteid }}-{{ b.taskid }}-{{ b.update }}-{{ b.qty }}
                   {% endfor %}
                 {% elif item.datatype.slug == 'profitstable' %}
                     Profit
                   {% for b in tables %}
-                      {{ b.profitid }}-{{ b.sitename }}-{{ b.taskid }}-{{ b.revenue }}-{{ b.profit }}
+                      {{ b.profitid }}-{{ b.siteid }}-{{ b.taskid }}-{{ b.revenue }}-{{ b.profit }}
                   {% endfor %}
               {% endif %}
         </div>
@@ -59,10 +59,10 @@
     });///////////////////////////////////////////////////////////////////
 
     //filter javascript;
-    var varurl='{% url "plotResults" 123 %}';
+    var varurl='{% url "plotResults" S123 %}';
     urlMap = {
         {% for value in sites %}
-            '{{ value.siteid }}' : varurl.replace(/123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
+            '{{ value.siteid }}' : varurl.replace(/S123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
         {% endfor %}
     };
     $(function() {

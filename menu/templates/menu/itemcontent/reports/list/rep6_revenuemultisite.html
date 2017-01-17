@@ -1,0 +1,106 @@
+    <!-- code to include the highcharts and jQuery libraries goes here -->
+    <!-- load_charts filter takes a comma-separated list of id's where -->
+    <!-- the charts need to be rendered to                             -->
+
+    <script src="http://code.highcharts.com/highcharts.js" type="text/javascript"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js" type="text/javascript"></script>
+
+    {# hightcharts tự tạo js, phù hợp với những report đơn giản, nhưng khó control với report phức tạp #}
+    {#% load chartit %#}
+    {# { weatherchart|load_charts:"container" } #}
+<div class="col-sm-{{ item.size }} col-xs-12">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+            <h6>{{item}}</h6>
+        </div>
+        <div class="panel-body">
+
+            <form name="classic">
+                <select name="sites" id="sites_{{ item.id }}" size="1"  style="width: 150px">
+                    <option selected>Select A Site</option>
+                    {% for f in json_filter %}
+                            <option value="{{ f.SiteID }}">{{ f.SiteID }}. {{ f.SiteName }}</option>
+
+                    {% endfor %}
+                </select>
+
+                <select name="tasks" id="tasks_{{ item.id }}" size="1"  style="width: 350px">
+                    <option selected>Select A Task</option>
+                    {% for t in json_filter %}
+                        <option value="{{ t.SiteID }}">{{ t.SiteID }}. {{ t.SiteName }}</option>
+                    {% endfor %}
+                </select>
+                </select>
+            </form>
+
+            <div class="btn-group">
+                <button type="button" id="btnSearch_{{ item.id }}" class="btn btn-primary">Search</button>
+            </div>
+
+            <!--/form-->
+            <!-- Search box End -->
+            <div id="container_{{ item.id }}" style="width:100%; height:600px;"> Chart will be rendered here </div>
+        </div>
+      </div>
+ </div>
+
+<script  type="text/javascript">
+    urlMap = {
+            {% for value in sites %}
+                '{{ value.siteid }}' : varurl.replace(/S123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
+            {% endfor %}
+        };
+    //demo highchart với js
+    $(function(){
+            //alert(resultSite.concat(resultTask));
+            //alert(resultSite);
+        LoadHighcharts('{{ item.id }}');
+        function LoadHighcharts(item_id) {
+            alert(item_id);
+
+
+            //var t = resultSite;
+
+
+            {% for r in json_data %}
+                    {% if r.filter == "S127" %}
+                        {% if r.name == 'Label' %} var array_x1 = {'{{ r.filter }}' : {{ r.data|safe }} };
+                        {% elif r.name == 'Revenue' %} var array_y1 = {{ r.data|safe }};
+                        {% elif r.name == 'RevenueUpt' %} var array_y2 = {{ r.data|safe }};
+                        {% elif r.name == 'RevenueAct' %} var array_y3 = {{ r.data|safe }};
+                        {% elif r.name == 'Extra' %} var array_y4 = {{ r.data|safe }};
+                        {% endif %}
+                    {% endif %}
+            {% endfor %}
+
+
+            $("#container_"+item_id).highcharts({
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Revenue Chart'
+                },
+                xAxis: {
+                    categories: array_x1
+                },
+                yAxis: {
+                    title: {
+                        text: 'numbers'
+                    }
+                },
+                tooltip: {
+                    shared: true
+                },
+                series: [
+                    {name: 'Revenue', data: array_y1},
+                    {name: 'RevenueUpt', data: array_y2},
+                    {name: 'RevenueAct', data: array_y3},
+                    {name: 'ExtraValue', data: array_y4}
+                ]
+            });
+        }
+    });
+
+</script>
+

@@ -21,14 +21,14 @@
 <body>
     <!-- Search box Start -->
     <form name="classic">
-        <select name="sites" class="sites" size="6"  style="width: 150px">
+        <select name="sites" class="sites" size="1"  style="width: 150px">
             <option selected>Select A Site</option>
             {% for s in sites %}
                 <option value="{{ s.siteid }}">{{ s.sitename }}</option>
             {% endfor %}
         </select>
 
-        <select name="tasks" class="tasks" size="6"  style="width: 350px">
+        <select name="tasks" class="tasks" size="1"  style="width: 350px">
             <option selected>Select A Task</option>
             {% for t in tasks %}
                 <option value="{{ t.taskid }}">{{ t.taskid }}. {{ t.shortname }}</option>

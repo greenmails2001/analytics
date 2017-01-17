@@ -36,10 +36,10 @@
     });///////////////////////////////////////////////////////////////////
 
     //filter javascript;
-    var varurl='{% url "plot_profits_barline" 123 %}';
+    var varurl='{% url "plot_profits_barline" S123 %}';
     urlMap = {
         {% for value in sites %}
-            '{{ value.siteid }}' : varurl.replace(/123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
+            '{{ value.siteid }}' : varurl.replace(/S123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
         {% endfor %}
     };
     $(function() {

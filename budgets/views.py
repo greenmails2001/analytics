@@ -50,7 +50,7 @@ class BudgetDetailView(DetailView):
                 psite = Sites.objects.get(siteid=self.kwargs['site_id'])
                 context['psite'] = psite
                 print(psite.sitename)
-                context['profits'] = Profits.objects.filter(sitename=psite.sitename) #profits
+                context['profits'] = Profits.objects.filter(siteid=psite.siteid) #profits
             else:
                 print('6')
                 context['psite'] = sites[0]
@@ -155,7 +155,7 @@ def plotResults(request):
 
     ax=fig.add_subplot(1,1,1)
     #p = get_object_or_404(Profits, sitename = '124_Villa-Park') # Get the poll object from django
-    profits = Profits.objects.filter(sitename='124_Villa-Park')
+    profits = Profits.objects.filter(siteid='S124')
     numTests = profits.count()
     x = matplotlib.numpy.arange(1,numTests)
 
@@ -176,7 +176,7 @@ def plotResults(request):
     ax.set_ylabel("Prices")
 
     #ax.set_xticklabels(names)
-    site= '124_Villa-Park'
+    site= 'S124'
     title = u"Dynamically Generated Results Plot for poll: %s" %site
     ax.set_title(title)
 

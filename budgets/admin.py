@@ -13,12 +13,12 @@ class BudgetsAdmin(admin.ModelAdmin):
     #models=Budgets
     list_display = ['taskid', 'taskname','update','unit','qty','unitprice','price','note','reason',
                     'qtyupt','unitpriceupt','priceupt','noteupt','reasonupt','qtyact','priceact','noteact',
-                    'sitename']
+                    'siteid']
     list_editable = ['taskid', 'taskname','update','unit','qty','unitprice','price','note','reason',
                     'qtyupt','unitpriceupt','priceupt','noteupt','reasonupt','qtyact','priceact','noteact',
-                    'sitename']
-    search_fields = ['sitename','taskid',]
-    list_filter = ['sitename','update',]
+                    'siteid']
+    search_fields = ['siteid','taskid',]
+    list_filter = ['siteid','update',]
     #prepopulated_fields = {'slug': ('name',)}
     formfield_overrides = {
         models.TextField: {'widget': Textarea(

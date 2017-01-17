@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'postage',
     'embed_video',
     'chartit',
+    'testapp',
+    'smart_selects',
+    'biapp',
 ]
 
 #MIDDLEWARE = [

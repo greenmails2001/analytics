@@ -60,9 +60,9 @@ class PlotView(LoginRequiredMixin):
         # bound chạy từ[0->1]
         ax=fig.add_axes([0.1, 0.1, 0.89, 0.85])
         #figsize=(20, 10)
-        site=get_object_or_404(Sites, siteid=site_id)
-        print('plot %s' % site.sitename)
-        profits = Profits.objects.filter(sitename=site.sitename)
+        #site=get_object_or_404(Sites, siteid=site_id)
+        #print('plot %s' % site.sitename)
+        profits = Profits.objects.filter(siteid=site_id)
         prices = [profit.price for profit in profits]
         priceupts = [profit.priceupt for profit in profits]
         revenues = [profit.revenue for profit in profits]
@@ -125,9 +125,9 @@ class PlotView(LoginRequiredMixin):
         ax=fig.add_axes([0.1, 0.1, 0.89, 0.85])
 
         #figsize=(20, 10)
-        site=get_object_or_404(Sites, siteid=site_id)
-        print('plot %s' % site.sitename)
-        revenues = Revenues.objects.filter(sitename=site.sitename)
+        #site=get_object_or_404(Sites, siteid=site_id)
+        #print('plot %s' % site.sitename)
+        revenues = Revenues.objects.filter(siteid=site_id)
         numTests = revenues.count()
 
         revs = [revenue.revenue for revenue in revenues]
@@ -186,9 +186,9 @@ class PlotView(LoginRequiredMixin):
         ax=fig.add_axes([0.1, 0.1, 0.89, 0.85])
 
         #figsize=(20, 10)
-        site=get_object_or_404(Sites, siteid=site_id)
-        print('plot %s' % site.sitename)
-        profits = Profits.objects.filter(sitename=site.sitename)
+        #site=get_object_or_404(Sites, siteid=site_id)
+        #print('plot %s' % site.sitename)
+        profits = Profits.objects.filter(siteid=site_id)
 
         profs = [profit.profit for profit in profits]
         prof_upts = [profit.profitupt for profit in profits]
@@ -299,18 +299,18 @@ class budget_chart_view(TemplateResponseMixin, View):#LoginRequiredMixin,DetailV
             print(request.user)
             #from menu.models import MonthlyWeatherByCity
             #cht = get_chartit(MonthlyWeatherByCity)
-            b = Budgets.objects.values_list('budgetid','price','priceupt','update','sitename').raw(
+            b = Budgets.objects.values_list('budgetid','price','priceupt','update','siteid').raw(
                 '''
                 SELECT budgets."BudgetID", budgets."Update",budgets."Price",budgets."PriceUpt", maxdatebudgets."SiteID"
                 FROM budgets,
-                (select "TaskID",max("Update") as "maxUpdate","SiteName",
-                  (select sites."SiteID" from sites where sites."SiteName"=budgets."SiteName") "SiteID"
+                (select "TaskID",max("Update") as "maxUpdate","SiteID",
+                  (select sites."SiteName" from sites where sites."SiteID"=budgets."SiteID") "SiteName"
                 from budgets
-                group by "TaskID","SiteName"
-                order by "TaskID","SiteName") as maxdatebudgets
-                where budgets."TaskID"=maxdatebudgets."TaskID" and budgets."SiteName"=maxdatebudgets."SiteName"
-                and budgets."Update"=maxdatebudgets."maxUpdate"  and char_length(budgets."TaskID") <= 4 and budgets."SiteName"='118_Casino-PQ'
-                order by budgets."SiteName"
+                group by "TaskID","SiteID"
+                order by "TaskID","SiteID") as maxdatebudgets
+                where budgets."TaskID"=maxdatebudgets."TaskID" and budgets."SiteID"=maxdatebudgets."SiteID"
+                and budgets."Update"=maxdatebudgets."maxUpdate"  and char_length(budgets."TaskID") <= 4 and budgets."SiteID"='S118'
+                order by budgets."SiteID"
                 '''
             )
             #cht=get_budget_chartit(b)
@@ -387,9 +387,9 @@ class profit_chart_view(TemplateResponseMixin, View):#LoginRequiredMixin,DetailV
             #from menu.models import MonthlyWeatherByCity
             #cht = get_chartit(MonthlyWeatherByCity)
             if site_id:
-                site=get_object_or_404(Sites, siteid=site_id)
-                print('plot %s' % site.sitename)
-                profits = Profits.objects.filter(sitename=site.sitename)
+                #site=get_object_or_404(Sites, siteid=site_id)
+                #print('plot %s' % site.sitename)
+                profits = Profits.objects.filter(siteid=site_id)
 
             profs = [profit.profit for profit in profits]
             prof_upts = [profit.profitupt for profit in profits]

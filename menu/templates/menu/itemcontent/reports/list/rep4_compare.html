@@ -1,0 +1,63 @@
+{% load staticfiles %}
+<link href="{% static "css/tasklevel.css" %}" rel="stylesheet" type="text/css">
+<script src="{% static "js/jquery.aCollapTable.js" %}"></script>
+
+<script>
+$(document).ready(function(){
+  $('.collaptable').aCollapTable({
+    startCollapsed: true,
+    addColumn: false,
+    plusButton: '<span class="i">+</span>',
+    minusButton: '<span class="i">-</span>'
+  });
+});
+</script>
+
+<div class="col-sm-{{ item.size }} col-xs-12">
+    <div>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand">+ Expand</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse">- Collapse</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-expand-all">+ Expand All</a>
+        <a href="javascript:void(0);" class="btn btn-primary act-button-collapse-all">- Collapse All</a>
+    </div>
+    <table class="collaptable table table-striped">
+      <tr>
+        <th>###</th>
+        <th>Name</th>
+        <th>Plan</th>
+          <th>Upt</th>
+          <th>Act</th>
+          <th>Remain</th>
+          <th>Deviation</th>
+
+      </tr>
+        {% for value in sites %}
+
+            <tr data-id="{{ value.siteid }}" data-parent="" class="parent">
+                <td>{{ value.siteid }}</td>
+                <td>{{ value.sitename }}</td>
+                <td>{{ value.manager }}</td>
+                <td>{{ value.phone }}</td>
+                <td>Start:{{ value.startdate }}</td>
+                <td>End:{{ value.enddate }}</td>
+            </tr>
+            {% for b in budgets %}
+                {% if b.SiteID == value.siteid %}
+                    <tr data-id="{{ b.TaskKey }}" data-parent="{{ b.TaskKeyParent }}"
+                        class="{% if b.TaskID == '0A' or b.TaskID == '0B' or b.TaskID == '0C' or b.TaskID == '0D' %}
+                         aaa {% else %} child {% endif %}">
+                    <td class="{% if b.TaskID == '3' %}warning{% endif %}">{{ b.TaskID }}</td>
+                    <td>{{ b.TaskName }}</td>
+                    <td>{{ b.Plan }}</td>
+                    <td>{{ b.Upt }}</td>
+                    <td>{{ b.Act }}</td>
+                    <td>{{ b.Remain }}</td>
+                    <td>{{ b.Deviation }}</td>
+
+                {% endif %}
+            {% endfor %}
+
+        {% endfor %}
+    </table>
+
+</div>

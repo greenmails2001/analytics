@@ -36,7 +36,9 @@ urlpatterns = [
     url(r'^$', views.homepage, name='homepage'),
     url(r'^employees/', include('employees.urls')),
     url(r'^budgets/', include('budgets.urls')),
-
+    url(r'^testapp/', include('testapp.urls')),
+    #smart_select chỉ dung dc cho trang admin.site.register
+    url(r'', include('smart_selects.urls')),
 ]
 
 if settings.DEBUG:

@@ -2,9 +2,10 @@ import os
 
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from django.apps import apps
+from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.db.models import Count
-from django.forms import modelform_factory
+from django.forms import modelform_factory, Textarea
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 
@@ -15,6 +16,7 @@ from django.views.generic.base import TemplateResponseMixin, View
 
 from analytics import settings
 from analytics.settings import MEDIA_ROOT
+from biapp.models import DataType, ColumnList
 from budgets.models import Sites, Profits
 from budgets.models import Tasklist, Revenues
 from employee_groups.models import MenuFunctionGroups, MenuHeaderGroups, MenuDetailGroups
@@ -131,6 +133,8 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
     menudetail = None
     model = None
     obj = None
+    datatypes=None
+    columnlists=None
     template_name = 'menu/manage/itemcontent/form.html'
 
     def get_model(self, model_name):
@@ -144,7 +148,12 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
         ##field choice for form########
         #Form = modelform_factory(model, form=ItemContentForm)#, exclude=['orderview', 'createddate', 'updateddate'])
         ##field choice for model#######
-        Form = modelform_factory(model, exclude=['orderview', 'createddate', 'updateddate'])
+        Form = modelform_factory(model, exclude=['orderview', 'createddate', 'updateddate'],
+                                 widgets={"sqlstring": Textarea(attrs={'rows': 4, 'cols': 30}),
+                                          "sqlfilter": Textarea(attrs={'rows': 4, 'cols': 30}),
+                                          "sqlextra": Textarea(attrs={'rows': 4, 'cols': 30}),
+                                          "content": Textarea(attrs={'rows': 4, 'cols': 30})}
+                                 )
         return Form(*args, **kwargs)
 
     def dispatch(self, request, menudetail_id, model_name, id=None):
@@ -156,23 +165,46 @@ class ItemContentCreateUpdateView(TemplateResponseMixin, View):
 
     def get(self, request, menudetail_id, model_name, id=None):
         form = self.get_form(self.model, instance=self.obj)
-        return self.render_to_response({'form': form, 'object': self.obj})
+        datatypes=DataType.objects.all()
+
+        return self.render_to_response({'form': form, 'object': self.obj,
+                                        'datatypes':datatypes,'model_name':model_name})
 
     def post(self, request, menudetail_id, model_name, id=None):
+        '''
+        if model_name == 'chart':
+            #file = request.FILES['file']
+            #print(file)
+            form = self.get_form(self.model, instance=self.obj, data=request.POST, files=request.POST['file'])
+        else:
+        '''
         form = self.get_form(self.model, instance=self.obj, data=request.POST, files=request.FILES)
+        datatypes=DataType.objects.all()
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.owner = request.user
+            #try:
+            #20161226: cap nhat datatype từ javascript
+            datatype = request.POST['select1']
+            #axis_x1 = request.POST['axis_x1']
+            obj.datatype_id=datatype
+            #obj.axis_x1=axis_x1
+            #print(datatype)
             obj.save()
             print("1")
+            messages.success(request, 'ItemContent updated successfully')
+
             if not id:
                 print("2")
                 # new content
                 ItemContent.objects.create(menudetail=self.menudetail, item=obj)
                 print("3")
             return redirect('menudetail_itemcontent_list', self.menudetail.id)
-        print("4")
-        return self.render_to_response({'form': form, 'object': self.obj})
+            #except obj.datatype_id.DoesNotExist:
+        messages.error(request, 'Error updating your content')
+        return self.render_to_response({'form': form, 'object': self.obj,
+                                        'datatypes':datatypes, 'model_name':model_name})
 
 ########itemcontent - delete
 class ItemContentDeleteView(View):
@@ -344,11 +376,11 @@ def plotResults(request, site_id):
     from matplotlib.dates import DateFormatter
     fig = Figure(facecolor='white')
     #fig = Figure()
-    site=get_object_or_404(Sites,siteid=site_id)
-    print('plot %s' % site.sitename)
+    #site=get_object_or_404(Sites,siteid=site_id)
+    #print('plot %s' % site.sitename)
     ax=fig.add_subplot(1,1,1)
     #p = get_object_or_404(Profits, sitename = '124_Villa-Park') # Get the poll object from django
-    profits = Profits.objects.filter(sitename=site.sitename)
+    profits = Profits.objects.filter(siteid=site_id)
     numTests = profits.count()
 
     prices = [profit.price for profit in profits]
@@ -369,7 +401,7 @@ def plotResults(request, site_id):
 
     #ax.set_xticklabels(names)
     #site= '124_Villa-Park'
-    title = u"Dynamically Generated: %s" % site.sitename
+    title = u"Dynamically Generated: %s" % site_id
     ax.set_title(title)
     #fig = Figure(facecolor='white')
 
@@ -414,9 +446,9 @@ def plot_profits_barline1111(request, site_id):
     ax=fig.add_subplot(1,1,1)#grid 2row x 1col , vitri thu 1
     #figsize=(20, 10)
     print('0')
-    site=get_object_or_404(Sites, siteid=site_id)
-    print('plot %s' % site.sitename)
-    profits = Profits.objects.filter(sitename=site.sitename)
+    #site=get_object_or_404(Sites, siteid=site_id)
+    #print('plot %s' % site.sitename)
+    profits = Profits.objects.filter(siteid=site_id)
     #dfProfits = pd.DataFrame(list(Profits.objects.all().values()))
     #dfProfitsDate = pd.DataFrame(list(....objects.filter(date__gte=datetime.datetime(2012, 5, 1)).values()))
     ## limit which fields
@@ -493,9 +525,9 @@ def plot_profits_barline2222(request, site_id):
     ax=fig.add_subplot(1,1,1)#211: grid 2row x 1col , vitri thu 1
     #figsize=(20, 10)
     print('0')
-    site=get_object_or_404(Sites, siteid=site_id)
-    print('plot %s' % site.sitename)
-    profits = Profits.objects.filter(sitename=site.sitename)
+    #site=get_object_or_404(Sites, siteid=site_id)
+    #print('plot %s' % site.sitename)
+    profits = Profits.objects.filter(siteid=site_id)
 
     print('1.1')
     prices = [profit.price for profit in profits]
@@ -574,9 +606,9 @@ def plot_profits_barline33333(request, site_id):
     #ax=fig.add_subplot(1,1,1)#211: grid 2row x 1col , vitri thu 1
     #figsize=(20, 10)
     print('0')
-    site=get_object_or_404(Sites, siteid=site_id)
-    print('plot %s' % site.sitename)
-    profits = Profits.objects.filter(sitename=site.sitename)
+    #site=get_object_or_404(Sites, siteid=site_id)
+    #print('plot %s' % site.sitename)
+    profits = Profits.objects.filter(siteid=site_id)
 
     print('1.1')
     prices = [profit.price for profit in profits]

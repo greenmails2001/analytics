@@ -5,7 +5,7 @@ from django.db import models
 
 class Sites(models.Model):
     siteid = models.TextField(db_column='SiteID', primary_key=True)  # Field name made lowercase.
-    sitename = models.TextField(db_column='SiteName', blank=True, null=True)  # Field name made lowercase.
+    sitename = models.TextField(db_column='SiteName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     manager = models.TextField(db_column='Manager', blank=True, null=True)  # Field name made lowercase.
     phone = models.TextField(db_column='Phone', blank=True, null=True)  # Field name made lowercase.
     startdate = models.DateTimeField(db_column='StartDate', blank=True, null=True)  # Field name made lowercase.
@@ -14,7 +14,7 @@ class Sites(models.Model):
     finished = models.CharField(db_column='Finished', max_length=1, blank=True, null=True)  # Field name made lowercase.
     area = models.DecimalField(db_column='Area', max_digits=65535, decimal_places=65535, blank=True, null=True)  # Field name made lowercase.
     imagelink = models.TextField(db_column='ImageLink', blank=True, null=True)  # Field name made lowercase.
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
         #managed = True
@@ -47,42 +47,57 @@ class Profits(models.Model):
     taskid = models.TextField(db_column='TaskID')  # Field name made lowercase.
     name = models.TextField(db_column='Name', blank=True, null=True)  # Field name made lowercase.
     update = models.DateTimeField(db_column='Update')  # Field name made lowercase.
-    price = models.FloatField(db_column='Price', blank=True, null=True)  # Field name made lowercase.
-    priceupt = models.FloatField(db_column='PriceUpt', blank=True, null=True)  # Field name made lowercase.
-    priceact = models.FloatField(db_column='PriceAct', blank=True, null=True)  # Field name made lowercase.
-    sitename = models.TextField(db_column='SiteName')  # Field name made lowercase.
-    revenue = models.FloatField(db_column='Revenue', blank=True, null=True)  # Field name made lowercase.
-    revenueupt = models.FloatField(db_column='RevenueUpt', blank=True, null=True)  # Field name made lowercase.
-    revenueact = models.FloatField(db_column='RevenueAct', blank=True, null=True)  # Field name made lowercase.
-    profit = models.FloatField(db_column='Profit', blank=True, null=True)  # Field name made lowercase.
-    profitupt = models.FloatField(db_column='ProfitUpt', blank=True, null=True)  # Field name made lowercase.
-    profitact = models.FloatField(db_column='ProfitAct', blank=True, null=True)  # Field name made lowercase.
+    price = models.DecimalField(db_column='Price', max_digits=20, decimal_places=6, blank=True, null=True)
+    priceupt = models.DecimalField(db_column='PriceUpt', max_digits=20, decimal_places=6, blank=True, null=True)
+    priceact = models.DecimalField(db_column='PriceAct', max_digits=20, decimal_places=6, blank=True, null=True)
+    #price = models.FloatField(db_column='Price', blank=True, null=True)  # Field name made lowercase.
+    #priceupt = models.FloatField(db_column='PriceUpt', blank=True, null=True)  # Field name made lowercase.
+    #priceact = models.FloatField(db_column='PriceAct', blank=True, null=True)  # Field name made lowercase.
+    siteid = models.CharField(db_column='SiteID', max_length=10)
+    #sitename = models.TextField(db_column='SiteName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    revenue = models.DecimalField(db_column='Revenue', max_digits=20, decimal_places=6, blank=True, null=True)
+    revenueupt = models.DecimalField(db_column='RevenueUpt', max_digits=20, decimal_places=6, blank=True, null=True)
+    revenueact = models.DecimalField(db_column='RevenueAct', max_digits=20, decimal_places=6, blank=True, null=True)
+    #revenue = models.FloatField(db_column='Revenue', blank=True, null=True)  # Field name made lowercase.
+    #revenueupt = models.FloatField(db_column='RevenueUpt', blank=True, null=True)  # Field name made lowercase.
+    #revenueact = models.FloatField(db_column='RevenueAct', blank=True, null=True)  # Field name made lowercase.
+    profit = models.DecimalField(db_column='Profit', max_digits=20, decimal_places=6, blank=True, null=True)
+    profitupt = models.DecimalField(db_column='ProfitUpt', max_digits=20, decimal_places=6, blank=True, null=True)
+    profitact = models.DecimalField(db_column='ProfitAct', max_digits=20, decimal_places=6, blank=True, null=True)
+    #profit = models.FloatField(db_column='Profit', blank=True, null=True)  # Field name made lowercase.
+    #profitupt = models.FloatField(db_column='ProfitUpt', blank=True, null=True)  # Field name made lowercase.
+    #profitact = models.FloatField(db_column='ProfitAct', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         #managed = True
         db_table = 'profits'
-        unique_together = (('taskid', 'update', 'sitename'),)
-        ordering = ('sitename','update','taskid')
+        unique_together = (('taskid', 'update', 'siteid'),)
+        ordering = ('siteid','update','taskid')
         #hien thi tren admin
         verbose_name = '03. Profits'
         verbose_name_plural = '03. Profits'
 
 class Revenues(models.Model):
     revenueid = models.AutoField(db_column='RevenueID', primary_key=True)
-    sitename = models.TextField(db_column='SiteName')  # Field name made lowercase.
+    siteid = models.CharField(db_column='SiteID', max_length=10)
+    #sitename = models.CharField(db_column='SiteName', max_length=100, blank=True, null=True)  # Field name made lowercase.
     revenue = models.DecimalField(db_column='Revenue', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
     revenueupt = models.DecimalField(db_column='RevenueUpt', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
     revenueact = models.DecimalField(db_column='RevenueAct', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
     area = models.DecimalField(db_column='Area', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
-    unit = models.TextField(db_column='Unit', blank=True, null=True)  # Field name made lowercase.
+    unit = models.CharField(db_column='Unit', max_length=10, blank=True, null=True)  # Field name made lowercase.
     duration = models.DecimalField(db_column='Duration', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
     update = models.DateTimeField(db_column='Update')  # Field name made lowercase.
     note = models.TextField(db_column='Note', blank=True, null=True)  # Field name made lowercase.
-
+    progress = models.DecimalField(db_column='Progress', max_digits=20, decimal_places=3, blank=True, null=True)
+    revenueratio = models.DecimalField(db_column='RevenueRatio', max_digits=3, decimal_places=3, blank=True, null=True)
+    expenseratio = models.DecimalField(db_column='ExpenseRatio', max_digits=3, decimal_places=3, blank=True, null=True)
+    start = models.DateTimeField(db_column='Start',null=True)
+    end = models.DateTimeField(db_column='End',null=True)
     class Meta:
         db_table = 'revenues'
-        unique_together = (('update', 'sitename'),)
-        ordering = ('sitename','update')
+        unique_together = (('update', 'siteid'),)
+        ordering = ('siteid','update')
         #hien thi tren admin
         verbose_name = '02. Revenues'
         verbose_name_plural = '02. Revenues'
@@ -107,13 +122,14 @@ class Budgets(models.Model):
     qtyact = models.DecimalField(db_column='QtyAct', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
     priceact = models.DecimalField(db_column='PriceAct', max_digits=20, decimal_places=6, blank=True, null=True)  # Field name made lowercase.
     noteact = models.TextField(db_column='NoteAct', blank=True, null=True)  # Field name made lowercase.
-    sitename = models.TextField(db_column='SiteName')  # Field name made lowercase.
+    #sitename = models.TextField(db_column='SiteName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    siteid = models.CharField(db_column='SiteID', max_length=10)
 
     class Meta:
         #managed = True
         db_table = 'budgets'
-        unique_together = [('taskid', 'update', 'sitename'),]
-        ordering = ('sitename','update','taskid')
+        unique_together = [('taskid', 'update', 'siteid'),]
+        ordering = ('siteid','update','taskid')
         #hien thi tren admin
         verbose_name = '01. Budgets'
         verbose_name_plural = '01. Budgets'

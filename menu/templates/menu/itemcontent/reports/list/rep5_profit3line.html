@@ -1,0 +1,99 @@
+    <!-- code to include the highcharts and jQuery libraries goes here -->
+    <!-- load_charts filter takes a comma-separated list of id's where -->
+    <!-- the charts need to be rendered to                             -->
+
+    <script src="http://code.highcharts.com/highcharts.js" type="text/javascript"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js" type="text/javascript"></script>
+
+    {# hightcharts tự tạo js, phù hợp với những report đơn giản, nhưng khó control với report phức tạp #}
+    {#% load chartit %#}
+    {# { weatherchart|load_charts:"container" } #}
+<div class="col-sm-{{ item.size }} col-xs-12">
+      <div class="panel panel-default text-center">
+        <div class="panel-heading">
+            <h6>{{item}}</h6>
+        </div>
+        <div class="panel-body">
+
+            <!-- Search box Start -->
+            <form name="classic">
+                <select name="sites" id="sites" size="1"  style="width: 150px">
+                    <option selected>Select A Site</option>
+                    {% for s in sites %}
+                        <option value="{{ s.siteid }}">{{ s.sitename }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="tasks" id="tasks" size="1"  style="width: 350px">
+                    <option selected>Select A Task</option>
+                    {% for t in tasks %}
+                        <option value="{{ t.taskid }}">{{ t.taskid }}. {{ t.shortname }}</option>
+                    {% endfor %}
+                </select>
+                </select>
+            </form>
+            <div class="btn-group">
+                <button type="button" id="btnSearch{{ item.id }}" class="btn btn-primary">Search</button>
+            </div>
+
+            <!--/form-->
+            <!-- Search box End -->
+
+            <div id="container_{{ item.id }}" style="width:100%; height:600px;"> Chart will be rendered here </div>
+        </div>
+      </div>
+ </div>
+<script type="text/javascript">
+
+    //demo highchart với js
+    $(function () {
+        LoadHighcharts('{{ item.id }}');
+        function LoadHighcharts(item_id) {
+            //alert(item_id);
+            var array_x1 = [{% for x1 in list_x1 %}
+                {% if not forloop.first %},{% endif %}
+                '{{x1}}'
+            {% endfor %}];
+            var array_y1 = [{% for y1 in list_y1 %}
+                {% if not forloop.first %},{% endif %}
+                {{y1}}
+            {% endfor %}];
+            var array_y2 = [{% for y2 in list_y2 %}
+                {% if not forloop.first %},{% endif %}
+                {{y2}}
+            {% endfor %}];
+            var array_y3 = [{% for y3 in list_y3 %}
+                {% if not forloop.first %},{% endif %}
+                {{y3}}
+            {% endfor %}];
+            alert(array_y1);
+            $("#container_"+item_id).highcharts({
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Profit Chart' +item_id
+                },
+                xAxis: {
+                    categories: array_x1
+                },
+                yAxis: {
+                    title: {
+                        text: 'numbers' +item_id
+                    }
+                },
+                tooltip: {
+                    shared: true
+                },
+                series: [
+                    {name: 'Profit', data: array_y1},
+                    {name: 'ProfitUpt', data: array_y2},
+                    {name: 'ProfitAct', data: array_y3}
+                ]
+            });
+        }
+    });
+</script>
+
+
+</html>
