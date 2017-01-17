@@ -45,35 +45,79 @@
  </div>
 
 <script  type="text/javascript">
-    urlMap = {
-            {% for value in sites %}
-                '{{ value.siteid }}' : varurl.replace(/S123/, {{value.siteid}}) {% if not forloop.last %},{% endif %}
-            {% endfor %}
-        };
+
+    var map_x1 = {
+                {% for r in json_data %}
+                        {% if r.name == 'Label' %} '{{ r.filter }}' : {{ r.data|safe }}{% if not forloop.last %},{% endif %}
+                        {% endif %}
+                {% endfor %}
+            };
+
+            var map_y1 = {
+                {% for r in json_data %}
+                        {% if r.name == 'Revenue' %} '{{ r.filter }}' : {{ r.data|safe }}{% if not forloop.last %},{% endif %}
+                        {% endif %}
+                {% endfor %}
+            };
+        var map_y2 = {
+                {% for r in json_data %}
+                        {% if r.name == 'RevenueUpt' %} '{{ r.filter }}' : {{ r.data|safe }}{% if not forloop.last %},{% endif %}
+                        {% endif %}
+                {% endfor %}
+            };
+        var map_y3 = {
+                {% for r in json_data %}
+                        {% if r.name == 'RevenueAct' %} '{{ r.filter }}' : {{ r.data|safe }}{% if not forloop.last %},{% endif %}
+                        {% endif %}
+                {% endfor %}
+            };
+        var map_y4 = {
+                {% for r in json_data %}
+                        {% if r.name == 'Extra' %} '{{ r.filter }}' : {{ r.data|safe }}{% if not forloop.last %},{% endif %}
+                        {% endif %}
+                {% endfor %}
+            };
+
+    var resultSite='';
+    var resultTask='';
+    $("#sites_"+'{{ item.id }}').change(function(){
+        var selText = $(this).val();
+        alert(selText);
+        resultSite=this.options[this.options.selectedIndex].value;
+        alert(resultSite);
+
+    });
+    $("#tasks_"+'{{ item.id }}').change(function(){
+        //var selText = $(this).text();
+        //alert(selText);
+        resultTask=this.options[this.options.selectedIndex].value;
+        alert(resultTask);
+    });
+
+    var array_x1 = map_x1['S123'];
+    var array_y1 = map_y1['S123'];
+    var array_y2 = map_y2['S123'];
+    var array_y3 = map_y3['S123'];
+    var array_y4 = map_y4['S123'];
+
+    $("#btnSearch_"+'{{ item.id }}').click(function(){
+        alert(resultSite);
+        array_x1 = map_x1[resultSite];
+        array_y1 = map_y1[resultSite];
+        array_y2 = map_y2[resultSite];
+        array_y3 = map_y3[resultSite];
+        array_y4 = map_y4[resultSite];
+
+        LoadHighcharts('{{ item.id }}');
+    });
     //demo highchart với js
-    $(function(){
+    //$(function(){
             //alert(resultSite.concat(resultTask));
             //alert(resultSite);
-        LoadHighcharts('{{ item.id }}');
+
         function LoadHighcharts(item_id) {
-            alert(item_id);
-
-
-            //var t = resultSite;
-
-
-            {% for r in json_data %}
-                    {% if r.filter == "S127" %}
-                        {% if r.name == 'Label' %} var array_x1 = {'{{ r.filter }}' : {{ r.data|safe }} };
-                        {% elif r.name == 'Revenue' %} var array_y1 = {{ r.data|safe }};
-                        {% elif r.name == 'RevenueUpt' %} var array_y2 = {{ r.data|safe }};
-                        {% elif r.name == 'RevenueAct' %} var array_y3 = {{ r.data|safe }};
-                        {% elif r.name == 'Extra' %} var array_y4 = {{ r.data|safe }};
-                        {% endif %}
-                    {% endif %}
-            {% endfor %}
-
-
+            //alert(item_id);
+            //alert(array_x1);alert(array_y1);alert(array_y2);alert(array_y3);alert(array_y4);
             $("#container_"+item_id).highcharts({
                 chart: {
                     type: 'line'
@@ -100,7 +144,7 @@
                 ]
             });
         }
-    });
+    //});
 
 </script>
 
